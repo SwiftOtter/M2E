@@ -23,6 +23,8 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
              ->addJs('M2ePro/Order/Edit/ShippingAddressHandler.js')
              ->addJs('M2ePro/Ebay/Order/MigrationToV611Handler.js');
 
+        $this->setComponentPageHelpLink('Sales+and+Orders+overview');
+
         return $this;
     }
 
@@ -67,6 +69,9 @@ class Ess_M2ePro_Adminhtml_Ebay_OrderController extends Ess_M2ePro_Controller_Ad
         Mage::helper('M2ePro/Data_Global')->setValue('temp_data', $order);
 
         $this->_initAction();
+
+        $this->setComponentPageHelpLink('Manage+Order+Details');
+
         $this->_initPopUp();
 
         $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_order_view'))

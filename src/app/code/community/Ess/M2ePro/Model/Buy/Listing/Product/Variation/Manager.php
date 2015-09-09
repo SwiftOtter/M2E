@@ -60,7 +60,10 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
         $productAttributes = array_map('strtolower', array_keys($this->getProductOptions()));
         $magentoAttributes = array_map('strtolower', $this->getCurrentMagentoAttributes());
 
-        return !array_diff($productAttributes, $magentoAttributes);
+        sort($productAttributes);
+        sort($magentoAttributes);
+
+        return $productAttributes == $magentoAttributes;
     }
 
     public function isActualProductVariation()
@@ -241,7 +244,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Variation_Manager
             'sku' => $this->getBuyListingProduct()->getSku(),
             'product_id' => (int)$this->getListingProduct()->getProductId(),
             'store_id' => (int)$this->getListingProduct()->getListing()->getStoreId(),
-            'variation_options' => json_encode($options),
+            'variation_product_options' => json_encode($options),
         );
 
         Mage::getModel('M2ePro/Buy_Item')->setData($data)->save();

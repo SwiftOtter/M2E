@@ -110,7 +110,10 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
 
     private function processAmazonOrders($response, Ess_M2ePro_Model_Account $account)
     {
-        $ordersLastSynchronization = $account->getData('orders_last_synchronization');
+        /** @var Ess_M2ePro_Model_Amazon_Account $amazonAccount */
+        $amazonAccount = $account->getChildObject();
+
+        $ordersLastSynchronization = $amazonAccount->getData('orders_last_synchronization');
 
         $orders = array();
 
@@ -134,7 +137,7 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
             $orders[] = $order;
         }
 
-        $account->setData('orders_last_synchronization', $ordersLastSynchronization)->save();
+        $amazonAccount->setData('orders_last_synchronization', $ordersLastSynchronization)->save();
 
         return $orders;
     }
@@ -146,8 +149,8 @@ class Ess_M2ePro_Model_Amazon_Synchronization_Orders_Receive_Responser
             if ($order->canCreateMagentoOrder()) {
                 try {
                     $order->createMagentoOrder();
-                } catch (Exception $e) {
-                    Mage::helper('M2ePro/Module_Exception')->process($e);
+                } catch (Exception $exception) {
+                    continue;
                 }
             }
 

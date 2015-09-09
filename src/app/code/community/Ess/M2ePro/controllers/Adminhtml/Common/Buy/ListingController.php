@@ -49,6 +49,8 @@ class Ess_M2ePro_Adminhtml_Common_Buy_ListingController
 
         $this->_initPopUp();
 
+        $this->setPageHelpLink(Ess_M2ePro_Helper_Component_Buy::NICK, 'Edit+M2E+Pro+Listing+Settings');
+
         return $this;
     }
 
@@ -136,8 +138,10 @@ class Ess_M2ePro_Adminhtml_Common_Buy_ListingController
         $this->setRuleData('buy_rule_listing_view');
         // ---------------------------
 
-        $this->_initAction()
-            ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_common_buy_listing_view'))
+        $this->_initAction();
+        $this->setPageHelpLink(Ess_M2ePro_Helper_Component_Buy::NICK, 'Manage+M2E+Pro+Listings');
+
+        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_common_buy_listing_view'))
             ->renderLayout();
     }
 
@@ -457,7 +461,7 @@ class Ess_M2ePro_Adminhtml_Common_Buy_ListingController
                 return $this->getResponse()->setBody(json_encode($response));
             }
 
-            Mage::helper('M2ePro/Data_Global')->setValue('temp_data',$result['data']);
+            Mage::helper('M2ePro/Data_Global')->setValue('temp_data',$result);
             Mage::helper('M2ePro/Data_Global')->setValue('product_id',$productId);
             Mage::helper('M2ePro/Data_Global')->setValue('marketplace_id',$marketplaceObj->getId());
         } else {
@@ -518,6 +522,8 @@ class Ess_M2ePro_Adminhtml_Common_Buy_ListingController
     {
         $productId = $this->getRequest()->getParam('product_id');
         $generalId = $this->getRequest()->getParam('general_id');
+        $searchType  = $this->getRequest()->getParam('search_type');
+        $searchValue = $this->getRequest()->getParam('search_value');
 
         if (empty($productId) || empty($generalId)) {
             return $this->getResponse()->setBody('You should provide correct parameters.');
@@ -529,8 +535,20 @@ class Ess_M2ePro_Adminhtml_Common_Buy_ListingController
         if ($listingProduct->isNotListed() &&
             !$listingProduct->getData('template_new_product_id')
         ) {
+            if (!empty($searchType) && !empty($searchValue)) {
+                $generalIdSearchInfo = array(
+                    'is_set_automatic' => false,
+                    'type'  => $searchType,
+                    'value' => $searchValue,
+                );
+
+                $listingProduct->setSettings('general_id_search_info', $generalIdSearchInfo);
+            }
+
             $listingProduct->setData('general_id',$generalId);
             $listingProduct->setData('template_new_product_id',NULL);
+            $listingProduct->setData('search_settings_status',NULL);
+            $listingProduct->setData('search_settings_data',NULL);
 
             $listingProduct->save();
         }
@@ -569,7 +587,9 @@ class Ess_M2ePro_Adminhtml_Common_Buy_ListingController
 
             $listingProduct->setData('general_id',NULL);
             $listingProduct->setData('template_new_product_id',NULL);
+            $listingProduct->setData('general_id_search_info',NULL);
             $listingProduct->setData('search_settings_data',NULL);
+            $listingProduct->setData('search_settings_status',NULL);
 
             $listingProduct->save();
 

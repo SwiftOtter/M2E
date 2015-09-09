@@ -13,8 +13,6 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 
     private $marketplaceId = null;
 
-    private $actualMagentoProductVariations = null;
-
     /** @var Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Parent $typeModel */
     private $typeModel = null;
 
@@ -49,7 +47,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
     public function process()
     {
         if (is_null($this->listingProduct)) {
-            throw new Exception('Listing Product was not set.');
+            throw new Ess_M2ePro_Model_Exception('Listing Product was not set.');
         }
 
         $this->getTypeModel()->enableCache();
@@ -68,6 +66,7 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
     private function getSortedProcessors()
     {
         return array(
+            'Template',
             'GeneralIdOwner',
             'Attributes',
             'Theme',
@@ -105,13 +104,9 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
 
     // ##########################################################
 
-    public function getActualMagentoProductVariations()
+    public function getMagentoProductVariations()
     {
-        if (!is_null($this->actualMagentoProductVariations)) {
-            return $this->actualMagentoProductVariations;
-        }
-
-        return $this->actualMagentoProductVariations = $this->getListingProduct()
+        return $this->getListingProduct()
             ->getMagentoProduct()
             ->getVariationInstance()
             ->getVariationsTypeStandard();
@@ -186,11 +181,27 @@ class Ess_M2ePro_Model_Amazon_Listing_Product_Variation_Manager_Type_Relation_Pa
             return $this->possibleThemes;
         }
 
-        return $this->possibleThemes = Mage::getModel('M2ePro/Amazon_Marketplace_Details')
-            ->setMarketplaceId($this->getMarketplaceId())
+        $marketPlaceId = $this->getMarketplaceId();
+
+        $possibleThemes = Mage::getModel('M2ePro/Amazon_Marketplace_Details')
+            ->setMarketplaceId($marketPlaceId)
             ->getVariationThemes(
                 $this->getAmazonDescriptionTemplate()->getProductDataNick()
             );
+
+        $variationHelper = Mage::helper('M2ePro/Component_Amazon_Variation');
+        $themesUsageData = $variationHelper->getThemesUsageData();
+        $usedThemes = array();
+
+        if (!empty($themesUsageData[$marketPlaceId])) {
+            foreach ($themesUsageData[$marketPlaceId] as $theme => $count) {
+                if (!empty($possibleThemes[$theme])) {
+                    $usedThemes[$theme] = $possibleThemes[$theme];
+                }
+            }
+        }
+
+        return $this->possibleThemes = array_merge($usedThemes, $possibleThemes);
     }
 
     public function getMarketplaceId()

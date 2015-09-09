@@ -23,15 +23,41 @@ CommonAmazonListingGridHandler = Class.create(CommonListingGridHandler, {
         this.actionHandler = new CommonAmazonListingActionHandler(this);
         this.productSearchHandler = new CommonAmazonListingProductSearchHandler(this);
         this.templateDescriptionHandler = new CommonAmazonListingTemplateDescriptionHandler(this);
+        this.templateShippingOverrideHandler = new CommonAmazonListingTemplateShippingOverrideHandler(this);
         this.variationProductManageHandler = new CommonAmazonListingVariationProductManageHandler(this);
+        this.fulfillmentHandler = new CommonAmazonFulfillmentHandler(this);
 
         this.actions = Object.extend(this.actions, {
 
             movingAction: this.movingHandler.run.bind(this.movingHandler),
             deleteAndRemoveAction: this.actionHandler.deleteAndRemoveAction.bind(this.actionHandler),
 
-            assignTemplateDescriptionIdAction: (function() { this.templateDescriptionHandler.validateProductsForTemplateDescriptionAssign(this.getSelectedProductsString())}).bind(this),
-            unassignTemplateDescriptionIdAction: (function() { this.templateDescriptionHandler.unassignFromTemplateDescrition(this.getSelectedProductsString())}).bind(this),
+            assignTemplateDescriptionIdAction: (function(id) {
+                id = id || this.getSelectedProductsString();
+                this.templateDescriptionHandler.validateProductsForTemplateDescriptionAssign(id)
+            }).bind(this),
+            unassignTemplateDescriptionIdAction: (function(id) {
+                id = id || this.getSelectedProductsString();
+                this.templateDescriptionHandler.unassignFromTemplateDescrition(id)
+            }).bind(this),
+
+            assignTemplateShippingOverrideIdAction: (function(id) {
+                id = id || this.getSelectedProductsString();
+                this.templateShippingOverrideHandler.openPopUp(id)
+            }).bind(this),
+            unassignTemplateShippingOverrideIdAction: (function(id) {
+                id = id || this.getSelectedProductsString();
+                this.templateShippingOverrideHandler.unassign(id)
+            }).bind(this),
+
+            switchToAfnAction: (function(id) {
+                id = id || this.getSelectedProductsString();
+                this.fulfillmentHandler.switchToAFN(id);
+            }).bind(this),
+            switchToMfnAction: (function(id) {
+                id = id || this.getSelectedProductsString();
+                this.fulfillmentHandler.switchToMFN(id);
+            }).bind(this),
 
             assignGeneralIdAction: (function() { this.productSearchHandler.searchGeneralIdAuto(this.getSelectedProductsString())}).bind(this),
             newGeneralIdAction: (function() { this.productSearchHandler.addNewGeneralId(this.getSelectedProductsString())}).bind(this),
@@ -39,6 +65,28 @@ CommonAmazonListingGridHandler = Class.create(CommonListingGridHandler, {
 
         });
 
+    },
+
+    //----------------------------------
+
+    unassignTemplateDescriptionIdActionConfrim: function (id)
+    {
+        if (!this.confirm()) {
+            return;
+        }
+
+        this.templateDescriptionHandler.unassignFromTemplateDescrition(id)
+    },
+
+    //----------------------------------
+
+    unassignTemplateShippingOverrideIdActionConfrim: function (id)
+    {
+        if (!this.confirm()) {
+            return;
+        }
+
+        this.templateShippingOverrideHandler.unassign(id)
     }
 
     //----------------------------------

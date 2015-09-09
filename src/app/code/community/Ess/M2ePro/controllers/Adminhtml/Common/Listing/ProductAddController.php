@@ -42,6 +42,13 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
 
         $this->_initPopUp();
 
+        $component = $this->getRequest()->getParam('component');
+        if (!$component) {
+            $this->setComponentPageHelpLink('Add+Magento+Products');
+        } else {
+            $this->setPageHelpLink($component, 'Add+Magento+Products');
+        }
+
         return $this;
     }
 
@@ -142,10 +149,18 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
             return $this->getResponse()->setBody($grid->toHtml());
         }
 
-        $this->_initAction()
-            ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_common_listing_add_sourceProduct', '',
+        $this->_initAction();
+
+        $component = $this->getComponent();
+        if (!$component) {
+            $this->setComponentPageHelpLink('Adding+Products+from+the+List');
+        } else {
+            $this->setPageHelpLink($component, 'Adding+Products+from+the+List');
+        }
+
+        $this->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_common_listing_add_sourceProduct', '',
                 array(
-                    'component' => $this->getComponent()
+                    'component' => $component
                 )
             ))
             ->renderLayout();
@@ -203,6 +218,13 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
 
         $this->_initAction();
 
+        $component = $this->getComponent();
+        if (!$component) {
+            $this->setComponentPageHelpLink('Adding+Products+from+Category');
+        } else {
+            $this->setPageHelpLink($component, 'Adding+Products+from+Category');
+        }
+
         $gridContainer = $this->getLayout()->createBlock('M2ePro/adminhtml_common_listing_add_sourceCategory','',array(
             'component' => $this->getComponent()
         ));
@@ -210,7 +232,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
 
         /* @var $treeBlock Ess_M2ePro_Block_Adminhtml_Common_Listing_Category_Tree */
         $treeBlock = $this->getLayout()->createBlock('M2ePro/adminhtml_common_listing_category_tree', '', array(
-            'component' => $this->getComponent(),
+            'component' => $component,
             'tree_settings' => array(
                 'show_products_amount' => true,
                 'hide_products_this_listing' => true
@@ -220,7 +242,7 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
         if (is_null($this->getSessionValue('current_category_id'))) {
             $currentNode = $treeBlock->getRoot()->getChildren()->getIterator()->current();
             if (!$currentNode) {
-                throw new Exception('No Categories found');
+                throw new Ess_M2ePro_Model_Exception('No Categories found');
             }
             $this->setSessionValue('current_category_id', $currentNode->getId());
         }
@@ -580,13 +602,13 @@ class Ess_M2ePro_Adminhtml_Common_Listing_ProductAddController
 
     //#############################################
 
-    /** @return Ess_M2ePro_Model_Ebay_Listing
+    /** @return Ess_M2ePro_Model_Amazon_Listing
      * @throws Exception
      */
     private function getListingFromRequest()
     {
         if (!$listingId = $this->getRequest()->getParam('id')) {
-            throw new Exception('Listing is not defined');
+            throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
         return Mage::helper('M2ePro/Component')->getCachedUnknownObject('Listing',$listingId)->getChildObject();

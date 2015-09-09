@@ -183,12 +183,14 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
                 if (is_array($allowedTags) && !empty($allowedTags)) {
                     $allowed = implode('|', $allowedTags);
 
-                    $pattern = '/<([\/\s\r\n]*)(' . $allowed . ')((\s+\w+="[\w\s%#\/\.;:_-]*")*[\/\s\r\n]*)>/si';
+                    $pattern = '/<([\/\s\r\n]*)(' . $allowed . ')'.
+                        '((\s+\w+="[\w\s\%\?=&#\/\.;:_\-\(\)]*")*[\/\s\r\n]*)>/si';
                     $result = preg_replace($pattern, '##$1$2$3##', $data);
 
                     $result = htmlspecialchars($result, $flags);
 
-                    $pattern = '/##([\/\s\r\n]*)(' . $allowed . ')((\s+\w+="[\w\s%#\/\.;:_-]*")*[\/\s\r\n]*)##/si';
+                    $pattern = '/##([\/\s\r\n]*)(' . $allowed . ')'.
+                        '((\s+\w+="[\w\s\%\?=&#\/\.;:_\-\(\)]*")*[\/\s\r\n]*)##/si';
                     $result = preg_replace($pattern, '<$1$2$3>', $result);
                 } else {
                     $result = htmlspecialchars($data, $flags);
@@ -342,7 +344,6 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $back = base64_decode($this->getBackUrlParam($defaultBackIdOrRoute,$defaultBackParams));
 
-        $route = '';
         $params = array();
 
         if (strpos($back,'|') !== false) {
@@ -381,7 +382,7 @@ class Ess_M2ePro_Helper_Data extends Mage_Core_Helper_Abstract
     public function getClassConstantAsJson($class)
     {
         if (stripos($class,'Ess_M2ePro_') === false) {
-            throw new Exception('Class name must begin with "Ess_M2ePro"');
+            throw new Ess_M2ePro_Model_Exception('Class name must begin with "Ess_M2ePro"');
         }
 
         $reflectionClass = new ReflectionClass($class);

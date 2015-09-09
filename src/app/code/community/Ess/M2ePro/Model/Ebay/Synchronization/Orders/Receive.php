@@ -176,8 +176,8 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
             if ($order->canCreateMagentoOrder()) {
                 try {
                     $order->createMagentoOrder();
-                } catch (Exception $e) {
-                    Mage::helper('M2ePro/Module_Exception')->process($e);
+                } catch (Exception $exception) {
+                    continue;
                 }
             }
 
@@ -245,7 +245,9 @@ final class Ess_M2ePro_Model_Ebay_Synchronization_Orders_Receive
 
     private function saveLastUpdateTime(Ess_M2ePro_Model_Account $account, $lastUpdateTime)
     {
-        $account->setData('orders_last_synchronization', $lastUpdateTime)->save();
+        /** @var Ess_M2ePro_Model_Ebay_Account $ebayAccount */
+        $ebayAccount = $account->getChildObject();
+        $ebayAccount->setData('orders_last_synchronization', $lastUpdateTime)->save();
     }
 
     // ##########################################################

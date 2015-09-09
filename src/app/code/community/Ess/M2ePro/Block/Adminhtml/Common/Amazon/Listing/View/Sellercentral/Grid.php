@@ -94,7 +94,8 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Sellercentral_Grid
                 'status' => array(
                     Ess_M2ePro_Model_Listing_Product::STATUS_LISTED,
                     Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED,
-                    Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED
+                    Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED,
+                    Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN,
                 )
             )
         );
@@ -229,6 +230,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Sellercentral_Grid
             'type' => 'options',
             'sortable' => false,
             'options' => array(
+                Ess_M2ePro_Model_Listing_Product::STATUS_UNKNOWN => Mage::helper('M2ePro')->__('Unknown'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_LISTED => Mage::helper('M2ePro')->__('Active'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_STOPPED => Mage::helper('M2ePro')->__('Inactive'),
                 Ess_M2ePro_Model_Listing_Product::STATUS_BLOCKED => Mage::helper('M2ePro')->__('Inactive (Blocked)')
@@ -263,35 +265,54 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Sellercentral_Grid
 
         // Set mass-action
         //--------------------------------
+        $groups = array(
+            'actions'            => Mage::helper('M2ePro')->__('Actions'),
+            'edit_fulfillment'   => Mage::helper('M2ePro')->__('Fulfillment')
+        );
+
+        $this->getMassactionBlock()->setGroups($groups);
+
         $this->getMassactionBlock()->addItem('revise', array(
             'label'    => Mage::helper('M2ePro')->__('Revise Item(s)'),
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+        ), 'actions');
 
         $this->getMassactionBlock()->addItem('relist', array(
             'label'    => Mage::helper('M2ePro')->__('Relist Item(s)'),
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+        ), 'actions');
 
         $this->getMassactionBlock()->addItem('stop', array(
             'label'    => Mage::helper('M2ePro')->__('Stop Item(s)'),
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+        ), 'actions');
 
         $this->getMassactionBlock()->addItem('stopAndRemove', array(
             'label'    => Mage::helper('M2ePro')->__('Stop on Channel / Remove from Listing'),
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+        ), 'actions');
 
         $this->getMassactionBlock()->addItem('deleteAndRemove', array(
             'label'    => Mage::helper('M2ePro')->__('Remove from Channel & Listing'),
             'url'      => '',
             'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
-        ));
+        ), 'actions');
+
+        $this->getMassactionBlock()->addItem('switchToAfn', array(
+            'label'    => Mage::helper('M2ePro')->__('Switch to AFN'),
+            'url'      => '',
+            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+        ), 'edit_fulfillment');
+
+        $this->getMassactionBlock()->addItem('switchToMfn', array(
+            'label'    => Mage::helper('M2ePro')->__('Switch to MFN'),
+            'url'      => '',
+            'confirm'  => Mage::helper('M2ePro')->__('Are you sure?')
+        ), 'edit_fulfillment');
         //--------------------------------
 
         return parent::_prepareMassaction();
@@ -361,6 +382,11 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Sellercentral_Grid
             $productOptions = $typeModel->getProductOptions();
             $channelOptions = $typeModel->getChannelOptions();
 
+            $parentTypeModel = $variationManager->getTypeModel()->getParentTypeModel();
+
+            $virtualProductAttributes = array_keys($parentTypeModel->getVirtualProductAttributes());
+            $virtualChannelAttributes = array_keys($parentTypeModel->getVirtualChannelAttributes());
+
             /** @var Ess_M2ePro_Model_Amazon_Listing_Product $parentAmazonListingProduct */
             $parentAmazonListingProduct = $typeModel->getParentListingProduct()->getChildObject();
 
@@ -383,9 +409,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Sellercentral_Grid
                 Mage::helper('M2ePro')->__('Magento Variation') . '</div>';
             $value .= '<div style="font-size: 11px; color: grey; margin-left: 24px">';
             foreach ($productOptions as $attribute => $option) {
+                $style = '';
+                if (in_array($attribute, $virtualProductAttributes)) {
+                    $style = 'border-bottom: 2px dotted grey';
+                }
+
                 !$option && $option = '--';
-                $value .= '<b>' . Mage::helper('M2ePro')->escapeHtml($attribute) .
-                    '</b>:&nbsp;' . Mage::helper('M2ePro')->escapeHtml($option) . '<br/>';
+                $value .= '<span style="' . $style . '"><b>' . Mage::helper('M2ePro')->escapeHtml($attribute) .
+                    '</b>:&nbsp;' . Mage::helper('M2ePro')->escapeHtml($option) . '</span><br/>';
             }
             $value .= '</div>';
 
@@ -393,9 +424,14 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_View_Sellercentral_Grid
                 Mage::helper('M2ePro')->__('Amazon Variation') . '</div>';
             $value .= '<div style="font-size: 11px; color: grey; margin-left: 24px">';
             foreach ($channelOptions as $attribute => $option) {
+                $style = '';
+                if (in_array($attribute, $virtualChannelAttributes)) {
+                    $style = 'border-bottom: 2px dotted grey';
+                }
+
                 !$option && $option = '--';
-                $value .= '<b>' . Mage::helper('M2ePro')->escapeHtml($attribute) .
-                    '</b>:&nbsp;' . Mage::helper('M2ePro')->escapeHtml($option) . '<br/>';
+                $value .= '<span style="' . $style . '"><b>' . Mage::helper('M2ePro')->escapeHtml($attribute) .
+                    '</b>:&nbsp;' . Mage::helper('M2ePro')->escapeHtml($option) . '</span><br/>';
             }
             $value .= '</div>';
 
@@ -500,18 +536,12 @@ HTML;
 
     public function callbackColumnAvailableQty($value, $row, $column, $isExport)
     {
-        if ((int)$row->getData('amazon_status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
-            if (is_null($value) || $value === '') {
-                return Mage::helper('M2ePro')->__('N/A');
-            }
-        } else {
-            if (is_null($value) || $value === '') {
-                return '<i style="color:gray;">receiving...</i>';
-            }
+        if ((bool)$row->getData('is_afn_channel')) {
+            return Mage::helper('M2ePro')->__('AFN');
         }
 
-        if ((bool)$row->getData('is_afn_channel')) {
-            return '--';
+        if (is_null($value) || $value === '') {
+            return '<i style="color:gray;">receiving...</i>';
         }
 
         if ($value <= 0) {
@@ -609,15 +639,6 @@ HTML;
             return Mage::helper('M2ePro')->__('N/A');
         }
 
-        switch ($row->getData('is_afn_channel')) {
-            case Ess_M2ePro_Model_Amazon_Listing_Product::IS_ISBN_GENERAL_ID_YES:
-                $value = '<span style="font-weight: bold;">' . $value . '</span>';
-                break;
-
-            default:
-                break;
-        }
-
         return $value;
     }
 
@@ -679,6 +700,14 @@ HTML;
                     $value .= '<br/><span style="color: #605fff">[Remove in Progress...]</span>';
                     break;
 
+                case 'switch_to_afn_action':
+                    $value .= '<br/><span style="color: #605fff">[Switch to AFN in Progress...]</span>';
+                    break;
+
+                case 'switch_to_mfn_action':
+                    $value .= '<br/><span style="color: #605fff">[Switch to MFN in Progress...]</span>';
+                    break;
+
                 default:
                     break;
 
@@ -714,11 +743,11 @@ HTML;
 
         $condition = '';
 
-        if (!empty($value['from'])) {
+        if (isset($value['from']) && $value['from'] != '') {
             $condition = 'min_online_price >= \''.$value['from'].'\'';
         }
-        if (!empty($value['to'])) {
-            if (!empty($value['from'])) {
+        if (isset($value['to']) && $value['to'] != '') {
+            if (isset($value['from']) && $value['from'] != '') {
                 $condition .= ' AND ';
             }
             $condition .= 'min_online_price <= \''.$value['to'].'\'';
@@ -856,6 +885,12 @@ HTML;
                 break;
             case Ess_M2ePro_Model_Listing_Log::ACTION_CHANNEL_CHANGE:
                 $string = Mage::helper('M2ePro')->__('Channel Change');
+                break;
+            case Ess_M2ePro_Model_Listing_Log::ACTION_SWITCH_TO_AFN_ON_COMPONENT:
+                $string = Mage::helper('M2ePro')->__('Switch to AFN');
+                break;
+            case Ess_M2ePro_Model_Listing_Log::ACTION_SWITCH_TO_MFN_ON_COMPONENT:
+                $string = Mage::helper('M2ePro')->__('Switch to MFN');
                 break;
         }
 

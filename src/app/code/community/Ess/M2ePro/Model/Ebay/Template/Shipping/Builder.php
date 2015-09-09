@@ -26,10 +26,8 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
         //------------------------------
 
         //------------------------------
-        $marketplace = Mage::helper('M2ePro/Component')->getCachedComponentObject(
-            Ess_M2ePro_Helper_Component_Ebay::NICK,
-            'Marketplace',
-            $generalData['marketplace_id']
+        $marketplace = Mage::helper('M2ePro/Component_Ebay')->getCachedObject(
+            'Marketplace', $generalData['marketplace_id']
         );
         //------------------------------
 
@@ -69,13 +67,17 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
     {
         //------------------------------
         if (empty($data['marketplace_id'])) {
-            throw new LogicException('Marketplace ID is empty.');
+            throw new Ess_M2ePro_Model_Exception_Logic('Marketplace ID is empty.');
         }
         //------------------------------
 
         //------------------------------
-        if (empty($data['country'])) {
-            throw new LogicException('Country is empty.');
+        if ($data['country_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping::COUNTRY_MODE_CUSTOM_VALUE &&
+            empty($data['country_custom_value']) ||
+            $data['country_mode'] == Ess_M2ePro_Model_Ebay_Template_Shipping::COUNTRY_MODE_CUSTOM_ATTRIBUTE &&
+            empty($data['country_custom_attribute'])) {
+
+            throw new Ess_M2ePro_Model_Exception_Logic('Country is empty.');
         }
         //------------------------------
 
@@ -94,9 +96,15 @@ class Ess_M2ePro_Model_Ebay_Template_Shipping_Builder
 
         //------------------------------
         $keys = array(
-            'country',
-            'postal_code',
-            'address',
+            'country_mode',
+            'country_custom_value',
+            'country_custom_attribute',
+            'postal_code_mode',
+            'postal_code_custom_attribute',
+            'postal_code_custom_value',
+            'address_mode',
+            'address_custom_attribute',
+            'address_custom_value',
             'dispatch_time',
             'global_shipping_program',
             'local_shipping_rate_table_mode',

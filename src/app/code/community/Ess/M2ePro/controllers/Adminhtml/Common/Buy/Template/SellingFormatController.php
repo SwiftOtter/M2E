@@ -18,6 +18,8 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_SellingFormatController
         $this->getLayout()->getBlock('head')
             ->addJs('M2ePro/Common/Buy/Template/SellingFormatHandler.js');
 
+        $this->setPageHelpLink(Ess_M2ePro_Helper_Component_Buy::NICK, 'Selling+Format+Policy');
+
         return $this;
     }
 
@@ -97,17 +99,6 @@ class Ess_M2ePro_Adminhtml_Common_Buy_Template_SellingFormatController
             if (isset($post[$key])) {
                 $data[$key] = $post[$key];
             }
-        }
-
-        $tempConstant = Ess_M2ePro_Block_Adminhtml_Common_Buy_Template_SellingFormat_Edit_Form
-                            ::QTY_MODE_PRODUCT_FIXED_VIRTUAL_ATTRIBUTE_VALUE;
-
-        // virtual attribute for QTY_FIXED replacement
-        if ($data['qty_mode'] == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE &&
-            $data['qty_custom_attribute'] == $tempConstant) {
-
-            $data['qty_mode'] = Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED;
-            $data['qty_custom_attribute'] = '';
         }
 
         $data['title'] = strip_tags($data['title']);

@@ -20,6 +20,8 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_SynchronizationController
 
         $this->_initPopUp();
 
+        $this->setPageHelpLink(Ess_M2ePro_Helper_Component_Amazon::NICK, 'Synchronization+Policy');
+
         return $this;
     }
 
@@ -119,6 +121,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_SynchronizationController
             'revise_update_images',
             'revise_change_selling_format_template',
             'revise_change_description_template',
+            'revise_change_shipping_override_template',
             'revise_change_listing'
         );
         foreach ($keys as $key) {

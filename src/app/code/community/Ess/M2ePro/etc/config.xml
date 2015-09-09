@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Ess_M2ePro>
-            <version>6.3.4</version>
+            <version>6.3.6</version>
         </Ess_M2ePro>
     </modules>
     <default>
@@ -380,6 +380,16 @@
                 </observers>
             </sales_order_shipment_save_after>
 
+            <sales_order_shipment_track_save_after>
+                <observers>
+                    <M2ePro_observer>
+                        <type>singleton</type>
+                        <class>Ess_M2ePro_Model_Observer_Dispatcher</class>
+                        <method>salesOrderShipmentTrackSaveAfter</method>
+                    </M2ePro_observer>
+                </observers>
+            </sales_order_shipment_track_save_after>
+
             <sales_order_creditmemo_refund>
                 <observers>
                     <M2ePro_observer>
@@ -499,6 +509,10 @@
                     <Synchronization_Log>
                         <table>m2epro_synchronization_log</table>
                     </Synchronization_Log>
+
+                    <Log_System>
+                        <table>m2epro_system_log</table>
+                    </Log_System>
 
                     <StopQueue>
                         <table>m2epro_stop_queue</table>
@@ -672,9 +686,9 @@
                     <Order_Change>
                         <table>m2epro_order_change</table>
                     </Order_Change>
-                    <Order_Repair>
-                        <table>m2epro_order_repair</table>
-                    </Order_Repair>
+                    <Order_Matching>
+                        <table>m2epro_order_matching</table>
+                    </Order_Matching>
 
                     <Order>
                         <table>m2epro_order</table>
@@ -752,6 +766,13 @@
                     <Amazon_Item>
                         <table>m2epro_amazon_item</table>
                     </Amazon_Item>
+
+                    <Amazon_Template_ShippingOverride>
+                        <table>m2epro_amazon_template_shipping_override</table>
+                    </Amazon_Template_ShippingOverride>
+                    <Amazon_Template_ShippingOverride_Service>
+                        <table>m2epro_amazon_template_shipping_override_service</table>
+                    </Amazon_Template_ShippingOverride_Service>
 
                     <Amazon_Template_Description_Definition>
                         <table>m2epro_amazon_template_description_definition</table>

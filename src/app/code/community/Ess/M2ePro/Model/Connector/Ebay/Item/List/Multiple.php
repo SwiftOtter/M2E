@@ -18,7 +18,13 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Multiple
             $listingProduct->setData('synch_reasons', null);
 
             $additionalData = $listingProduct->getAdditionalData();
+
             unset($additionalData['synch_template_list_rules_note']);
+
+            if (isset($additionalData['add_to_schedule'])) {
+                unset($additionalData['add_to_schedule']);
+            }
+
             $listingProduct->setSettings('additional_data', $additionalData);
 
             $listingProduct->save();
@@ -40,23 +46,6 @@ class Ess_M2ePro_Model_Connector_Ebay_Item_List_Multiple
     protected function getActionType()
     {
         return Ess_M2ePro_Model_Listing_Product::ACTION_LIST;
-    }
-
-    // ----------------------------------------
-
-    protected function getRequestTimeout()
-    {
-        $imagesTimeout = 0;
-
-        foreach ($this->listingsProducts as $listingProduct) {
-
-            /** @var $listingProduct Ess_M2ePro_Model_Listing_Product */
-
-            $requestDataObject = $this->getRequestDataObject($listingProduct);
-            $imagesTimeout += self::TIMEOUT_INCREMENT_FOR_ONE_IMAGE * $requestDataObject->getTotalImagesCount();
-        }
-
-        return parent::getRequestTimeout() + $imagesTimeout;
     }
 
     // ########################################

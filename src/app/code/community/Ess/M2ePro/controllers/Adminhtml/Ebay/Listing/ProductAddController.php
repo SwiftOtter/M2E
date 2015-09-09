@@ -33,6 +33,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
             ->addJs('M2ePro/GridHandler.js')
             ->addJs('M2ePro/Listing/GridHandler.js')
             ->addJs('M2ePro/Ebay/Listing/ViewGridHandler.js')
+            ->addJs('M2ePro/Ebay/Listing/BidsHandler.js')
             ->addJs('M2ePro/Ebay/Listing/VariationProductManageHandler.js')
             ->addJs('M2ePro/Ebay/Listing/Settings/GridHandler.js')
             ->addJs('M2ePro/Ebay/Listing/ProductAdd/Settings/GridHandler.js')
@@ -51,8 +52,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
             ->addJs('M2ePro/Ebay/Listing/AutoActionHandler.js')
             ->addJs('M2ePro/Ebay/Listing/Category/ChooserHandler.js')
             ->addJs('M2ePro/Ebay/Listing/Category/SpecificHandler.js')
-            ->addJs('M2ePro/Ebay/Listing/Category/Chooser/BrowseHandler.js')
-        ;
+            ->addJs('M2ePro/Ebay/Listing/Category/Chooser/BrowseHandler.js');
 
         $this->getLayout()->getBlock('head')->setCanLoadExtJs(true);
 
@@ -61,6 +61,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
         }
 
         $this->_initPopUp();
+
+        $this->setComponentPageHelpLink('Add+Magento+Products');
 
         return $this;
     }
@@ -75,7 +77,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
     public function indexAction()
     {
         if (!$listingId = $this->getRequest()->getParam('listing_id')) {
-            throw new Exception('Listing is not defined');
+            throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
         if ((bool)$this->getRequest()->getParam('clear', false)) {
@@ -162,6 +164,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
 
         $this->_initAction();
 
+        $this->setComponentPageHelpLink('Adding+Products+from+the+List');
+
         $this->getLayout()->getBlock('head')->addJs('M2ePro/VideoTutorialHandler.js');
 
         $this->_title(Mage::helper('M2ePro')->__('Select Products'))
@@ -212,6 +216,8 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
 
         $this->_initAction();
 
+        $this->setComponentPageHelpLink('Adding+Products+from+Category');
+
         $this->getLayout()->getBlock('head')
              ->setCanLoadExtJs(true)
              ->addJs('M2ePro/Ebay/Listing/Product/SourceCategories/Summary/GridHandler.js')
@@ -228,7 +234,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
         if (is_null($this->getSessionValue('current_category_id'))) {
             $currentNode = $treeBlock->getRoot()->getChildren()->getIterator()->current();
             if (!$currentNode) {
-                throw new Exception('No Categories found');
+                throw new Ess_M2ePro_Model_Exception('No Categories found');
             }
             $this->setSessionValue('current_category_id', $currentNode->getId());
         }
@@ -390,8 +396,11 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
         $this->setRuleData('ebay_product_add_step_two');
         // ---------------------------
 
-        $this->_initAction()
-             ->_title(Mage::helper('M2ePro')->__('Set Products Settings'))
+        $this->_initAction();
+
+        $this->setPageHelpLink(NULL, 'pages/viewpage.action?pageId=17367111');
+
+        $this->_title(Mage::helper('M2ePro')->__('Set Products Settings'))
              ->_addContent($this->getLayout()->createBlock('M2ePro/adminhtml_ebay_listing_settings'))
              ->renderLayout();
     }
@@ -683,7 +692,7 @@ class Ess_M2ePro_Adminhtml_Ebay_Listing_ProductAddController
     private function getListingFromRequest()
     {
         if (!$listingId = $this->getRequest()->getParam('listing_id')) {
-            throw new Exception('Listing is not defined');
+            throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
         return Mage::helper('M2ePro/Component_Ebay')->getCachedObject('Listing',$listingId)->getChildObject();

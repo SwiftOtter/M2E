@@ -29,14 +29,14 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
 
     /**
      * @return Ess_M2ePro_Model_Marketplace
-     * @throws LogicException
+     * @throws Ess_M2ePro_Model_Exception_Logic
      */
     public function getMarketplace()
     {
         $marketplace = Mage::helper('M2ePro/Data_Global')->getValue('ebay_marketplace');
 
         if (!$marketplace instanceof Ess_M2ePro_Model_Marketplace) {
-            throw new LogicException('Marketplace is required for editing Shipping Policy.');
+            throw new Ess_M2ePro_Model_Exception_Logic('Marketplace is required for editing Shipping Policy.');
         }
 
         return $marketplace;
@@ -202,9 +202,23 @@ class Ess_M2ePro_Block_Adminhtml_Ebay_Template_Shipping_Edit_Form_Data extends M
             }
         }
 
-        $default['country'] = $countryId;
-        $default['postal_code'] = $postalCode;
-        $default['address'] = implode(', ', array_filter($address));
+        $address = implode(', ', array_filter($address));
+
+        if ($countryId) {
+            $default['country_mode'] = Ess_M2ePro_Model_Ebay_Template_Shipping::ADDRESS_MODE_CUSTOM_VALUE;
+            $default['country_custom_value'] = $countryId;
+        }
+
+        if ($postalCode) {
+            $default['postal_code_mode'] = Ess_M2ePro_Model_Ebay_Template_Shipping::POSTAL_CODE_MODE_CUSTOM_VALUE;
+            $default['postal_code_custom_value'] = $postalCode;
+        }
+
+        if ($address) {
+            $default['address_mode'] = Ess_M2ePro_Model_Ebay_Template_Shipping::ADDRESS_MODE_CUSTOM_VALUE;
+            $default['address_custom_value'] = $address;
+        }
+
         //------------------------------
 
         return $default;

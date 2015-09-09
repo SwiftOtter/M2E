@@ -7,6 +7,13 @@
 class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
     extends Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Abstract
 {
+    const PRODUCT_DETAILS_DOES_NOT_APPLY = 'Does Not Apply';
+    const PRODUCT_DETAILS_UNBRANDED = 'Unbranded';
+
+    const UPLOAD_IMAGES_MODE_AUTO = 1;
+    const UPLOAD_IMAGES_MODE_SELF = 2;
+    const UPLOAD_IMAGES_MODE_EPS  = 3;
+
     /**
      * @var Ess_M2ePro_Model_Template_Description
      */
@@ -102,7 +109,7 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
 
         $data = array(
             'gallery_type' => $this->getEbayDescriptionTemplate()->getGalleryType(),
-            'images'       => $this->getDescriptionSource()->getImagesForEbay(),
+            'images'       => $this->getDescriptionSource()->getGalleryImages(),
             'supersize'    => $this->getEbayDescriptionTemplate()->isUseSupersizeImagesEnabled()
         );
 
@@ -122,6 +129,12 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Action_Request_Description
         foreach (array('isbn','epid','upc','ean','brand','mpn') as $tempType) {
 
             if ($this->getIsVariationItem() && $tempType != 'brand') {
+                continue;
+            }
+
+            if ($this->getEbayDescriptionTemplate()->isProductDetailsModeDoesNotApply($tempType)) {
+                $data[$tempType] = ($tempType == 'brand') ? self::PRODUCT_DETAILS_UNBRANDED :
+                                                            self::PRODUCT_DETAILS_DOES_NOT_APPLY;
                 continue;
             }
 

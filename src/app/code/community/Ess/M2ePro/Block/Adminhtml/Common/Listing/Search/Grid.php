@@ -96,11 +96,13 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
             new Zend_Db_Expr('(
                 SELECT
                     lp.listing_product_id,
+                    lp.general_id_owner,
                     lp.general_id,
                     lp.sku
                 FROM (
                     SELECT
                         listing_product_id,
+                        is_general_id_owner as general_id_owner,
                         general_id,
                         sku
                     FROM ' . Mage::getResourceModel('M2ePro/Amazon_Listing_Product')->getMainTable() . '
@@ -108,6 +110,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
                     UNION
                     SELECT
                         listing_product_id,
+                        template_new_product_id as general_id_owner,
                         general_id,
                         sku
                     FROM ' . Mage::getResourceModel('M2ePro/Buy_Listing_Product')->getMainTable() . '
@@ -136,6 +139,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
                 'product_id'                    => 'main_table.product_id',
                 'listing_id'                    => 'main_table.listing_id',
                 'status'                        => 'main_table.status',
+                'general_id_owner'              => 't.general_id_owner',
                 'general_id'                    => 't.general_id',
                 'online_sku'                    => 't.sku'
             )
@@ -207,6 +211,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
                 'product_id'                    => 'main_table.product_id',
                 'listing_id'                    => new Zend_Db_Expr('NULL'),
                 'status'                        => 'main_table.status',
+                'general_id_owner'              => new Zend_Db_Expr('NULL'),
                 'general_id'                    => 't.general_id',
                 'online_sku'                    => 't.sku'
             )
@@ -239,6 +244,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
                 'product_id',
                 'listing_id',
                 'status',
+                'general_id_owner',
                 'general_id',
                 'online_sku',
             )
@@ -334,7 +340,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
         $this->addColumn('general_id', array(
             'header' => Mage::helper('M2ePro')->__('Identifier'),
             'align' => 'left',
-            'width' => '90px',
+            'width' => '100px',
             'type' => 'text',
             'index' => 'general_id',
             'filter_index' => 'general_id',
@@ -453,19 +459,48 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
         $productOptions = array();
 
         if ($listingProduct->isComponentModeAmazon()) {
-            if (!$listingProduct->getChildObject()->getVariationManager()->isIndividualType()) {
-                if ($listingProduct->getChildObject()->getVariationManager()->isVariationParent()) {
-                    $productOptions = $listingProduct->getChildObject()->getVariationManager()
+
+            $variationManager = $listingProduct->getChildObject()->getVariationManager();
+
+            if (!$variationManager->isIndividualType()) {
+
+                if ($variationManager->isVariationParent()) {
+
+                    $productAttributes = $listingProduct->getChildObject()->getVariationManager()
                         ->getTypeModel()->getProductAttributes();
 
+                    $virtualProductAttributes = $variationManager->getTypeModel()->getVirtualProductAttributes();
+                    $virtualChannelAttributes = $variationManager->getTypeModel()->getVirtualChannelAttributes();
+
                     $value .= '<div style="font-size: 11px; font-weight: bold; color: grey;"><br/>';
-                    $value .= implode(', ', $productOptions);
+                    $attributesStr = '';
+                    if (empty($virtualProductAttributes) && empty($virtualChannelAttributes)) {
+                        $attributesStr = implode(', ', $productAttributes);
+                    } else {
+                        foreach($productAttributes as $attribute) {
+                            if (in_array($attribute, array_keys($virtualProductAttributes))) {
+
+                                $attributesStr .= '<span style="border-bottom: 2px dotted grey">' . $attribute .
+                                    ' (' . $virtualProductAttributes[$attribute] . ')</span>, ';
+
+                            } else if (in_array($attribute, array_keys($virtualChannelAttributes))) {
+
+                                $attributesStr .= '<span>' . $attribute .
+                                    ' (' . $virtualChannelAttributes[$attribute] . ')</span>, ';
+
+                            } else {
+                                $attributesStr .= $attribute . ', ';
+                            }
+                        }
+                        $attributesStr = rtrim($attributesStr, ', ');
+                    }
+                    $value .= $attributesStr;
                     $value .= '</div>';
                 }
                 return $value;
             }
 
-            if ($listingProduct->getChildObject()->getVariationManager()->getTypeModel()->isVariationProductMatched()) {
+            if ($variationManager->getTypeModel()->isVariationProductMatched()) {
                 $productOptions = $listingProduct->getChildObject()->
                     getVariationManager()->getTypeModel()->getProductOptions();
             }
@@ -505,22 +540,37 @@ class Ess_M2ePro_Block_Adminhtml_Common_Listing_Search_Grid extends Mage_Adminht
 
     public function callbackColumnSku($value, $row, $column, $isExport)
     {
+        if ($row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
+            return '<span style="color: gray;">' . Mage::helper('M2ePro')->__('Not Listed') . '</span>';
+        }
+
         if (is_null($value) || $value === '') {
             return Mage::helper('M2ePro')->__('N/A');
         }
+
         return $value;
     }
 
     public function callbackColumnGeneralId($value, $row, $column, $isExport)
     {
-        if ((int)$row->getData('status') == Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
-            if (is_null($value) || $value === '') {
-                return Mage::helper('M2ePro')->__('N/A');
-            }
-        } else {
-            if (is_null($value) || $value === '') {
+        if (empty($value)) {
+
+            if ($row->getData('status') != Ess_M2ePro_Model_Listing_Product::STATUS_NOT_LISTED) {
                 return '<i style="color:gray;">receiving...</i>';
             }
+
+            if ($row->getData('general_id_owner')) {
+
+                switch ($row->getData('component_mode')) {
+
+                    case Ess_M2ePro_Helper_Component_Amazon::NICK:
+                        return Mage::helper('M2ePro')->__('New ASIN/ISBN');
+                    case Ess_M2ePro_Helper_Component_Buy::NICK:
+                        return Mage::helper('M2ePro')->__('New SKU');
+                }
+            }
+
+            return Mage::helper('M2ePro')->__('N/A');
         }
 
         $url = '';

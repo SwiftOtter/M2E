@@ -26,6 +26,11 @@ class Ess_M2ePro_Model_Amazon_Marketplace_Details
 
     // ##########################################################
 
+    public function getProductData()
+    {
+       return $this->productData;
+    }
+
     public function getVariationThemes($productDataNick)
     {
         if (!isset($this->productData[$productDataNick])) {
@@ -46,7 +51,7 @@ class Ess_M2ePro_Model_Amazon_Marketplace_Details
     private function load()
     {
         if (is_null($this->marketplaceId)) {
-            throw new Exception('Marketplace was not set.');
+            throw new Ess_M2ePro_Model_Exception('Marketplace was not set.');
         }
 
         /** @var $connRead Varien_Db_Adapter_Pdo_Mysql */
@@ -60,7 +65,7 @@ class Ess_M2ePro_Model_Amazon_Marketplace_Details
             ->fetch();
 
         if ($data === false) {
-            throw new Exception('Marketplace not found or not synchronized');
+            throw new Ess_M2ePro_Model_Exception('Marketplace not found or not synchronized');
         }
 
         $this->productData    = json_decode($data['product_data'], true);

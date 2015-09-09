@@ -69,8 +69,9 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_SearchAsin
 
     public function getGridHtml()
     {
-        $listing = Mage::helper('M2ePro/Component')
-            ->getCachedUnknownObject('Listing', $this->getRequest()->getParam('id'));
+        $listing = Mage::helper('M2ePro/Component')->getCachedUnknownObject(
+            'Listing', $this->getRequest()->getParam('id')
+        );
 
         $viewHeaderBlock = $this->getLayout()->createBlock(
             'M2ePro/adminhtml_listing_view_header','',
@@ -81,6 +82,16 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_SearchAsin
 
         $productSearchBlock = $this->getLayout()
             ->createBlock('M2ePro/adminhtml_common_amazon_listing_productSearch_main');
+        //------------------------------
+        $data = array(
+            'id'      => 'productSearch_cleanSuggest_button',
+            'label'   => Mage::helper('M2ePro')->__('Search ASIN/ISBN Manually'),
+            'class'   => 'productSearch_cleanSuggest_button',
+            'onclick' => 'ListingGridHandlerObj.productSearchHandler.clearSearchResultsAndManualSearch()'
+        );
+        $buttonResetBlock = $this->getLayout()->createBlock('adminhtml/widget_button')->setData($data);
+        $productSearchBlock->setChild('productSearch_cleanSuggest_button', $buttonResetBlock);
+        //------------------------------
 
         return $helpBlock->toHtml()
                . $viewHeaderBlock->toHtml()
@@ -240,7 +251,7 @@ class Ess_M2ePro_Block_Adminhtml_Common_Amazon_Listing_Add_SearchAsin
             {$this->getListing()->getId()}
         );
 
-        // todo next (temp solution)
+        // TODO NEXT (temp solution)
         ListingGridHandlerObj.actionHandler.setOptions(M2ePro);
         ListingGridHandlerObj.productSearchHandler.setOptions(M2ePro);
 
@@ -271,7 +282,7 @@ JAVASCRIPT;
     public function getListing()
     {
         if (!$listingId = $this->getRequest()->getParam('id')) {
-            throw new Exception('Listing is not defined');
+            throw new Ess_M2ePro_Model_Exception('Listing is not defined');
         }
 
         if (is_null($this->listing)) {
