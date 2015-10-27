@@ -1,11 +1,11 @@
 EbayListingOtherSynchronizationHandler = Class.create();
 EbayListingOtherSynchronizationHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
-        //-----------------
+        // ---------------------------------------
         Validation.add('M2ePro-validate-conditions-between', M2ePro.translator.translate('Must be greater than "Min".'), function(value, el) {
 
             var minValue = $(el.id.replace('_max','')).value;
@@ -17,7 +17,7 @@ EbayListingOtherSynchronizationHandler.prototype = Object.extend(new CommonHandl
             return parseInt(value) > parseInt(minValue);
         });
 
-        //-----------------
+        // ---------------------------------------
         Validation.add('M2ePro-validate-stop-relist-conditions-product-status', M2ePro.translator.translate('Inconsistent Settings in Relist and Stop Rules.'), function(value, el) {
 
             if (EbayListingOtherSynchronizationHandlerObj.isRelistModeDisabled()) {
@@ -86,17 +86,17 @@ EbayListingOtherSynchronizationHandler.prototype = Object.extend(new CommonHandl
 
             return true;
         });
-        //-----------------
+        // ---------------------------------------
     },
 
-    //-----------------------------------
+    // ---------------------------------------
 
     isRelistModeDisabled: function()
     {
         return $('relist_mode').value == 0;
     },
 
-    //-----------------------------------
+    // ---------------------------------------
 
     save_click: function(redirectUrl)
     {
@@ -130,7 +130,7 @@ EbayListingOtherSynchronizationHandler.prototype = Object.extend(new CommonHandl
         var id = this.id.replace('_source', '');
         var sourceMode = this.options[this.selectedIndex].up().getAttribute(id + '_source');
 
-        //hack for PRODUCT FIXED QTY virtual attribute
+        // hack for PRODUCT FIXED QTY virtual attribute
         if (sourceMode === null ||
             this.value == M2ePro.php.constant('Ess_M2ePro_Model_Ebay_Listing_Other_Source::QTY_SOURCE_PRODUCT_FIXED')) {
 
@@ -239,5 +239,5 @@ EbayListingOtherSynchronizationHandler.prototype = Object.extend(new CommonHandl
         });
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

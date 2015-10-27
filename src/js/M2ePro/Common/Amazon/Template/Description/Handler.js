@@ -1,35 +1,26 @@
 CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function()
     {
-        // ugly hack
-        //if (version_compare(Prototype.Version,'1.7') < 0) {
-        //    for (var property in Selector.xpath.operators) {
-        //        Selector.xpath.operators[property] = Selector.xpath.operators[property].split('#{3}').join('#{4}');
-        //    }
-        //    Selector.patterns['attr'] = /\[\s*((?:[\w\u00c0-\uFFFF-]|\\.)+)\s*(?:(\S?=)\s*(['"]*)(.*?)\3|)\s*\](?![^\[]*\])(?![^\(]*\))/;
-        //}
-        // -------
-
         var self = this;
 
         self.specificHandler = null;
 
-        // -------
+        // ---------------------------------------
         self.categoryInfo = {};
 
         self.categoryPathHiddenInput            = $('category_path');
         self.categoryNodeIdHiddenInput          = $('browsenode_id');
 
         self.categoryProductDataNickHiddenInput = $('product_data_nick');
-        // -------
+        // ---------------------------------------
 
         self.productDataNicksInfo = {};
         self.variationThemes      = [];
 
-        // -------
+        // ---------------------------------------
 
         self.initValidation();
     },
@@ -69,7 +60,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setSpecificHandler: function(object)
     {
@@ -77,7 +68,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         self.specificHandler = object;
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     isNewAsinAccepted: function()
     {
@@ -99,7 +90,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         }
     },
 
-    //##################################
+    //########################################
 
     duplicate_click: function($headId)
     {
@@ -142,7 +133,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         CommonHandlerObj.duplicate_click($headId, M2ePro.translator.translate('Add Description Policy'));
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     save_click: function($super, url)
     {
@@ -160,7 +151,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         $super(url, tabsId);
     },
 
-    //##################################
+    //########################################
 
     onChangeMarketplace: function()
     {
@@ -193,7 +184,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
     {
         var self = AmazonTemplateDescriptionHandlerObj;
 
-        // --
+        // ---------------------------------------
         var onlyAsinBlocks = $$('.hide-when-asin-is-disabled');
 
         onlyAsinBlocks.invoke('hide');
@@ -212,7 +203,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
             $('item_package_quantity_mode').simulate('change');
             $('number_of_items_mode').simulate('change');
         }
-        // --
+        // ---------------------------------------
 
         // set is required
         parseInt(this.value) ? $('category_path').addClassName('required-entry')
@@ -235,10 +226,10 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
             if(this.value == 0) chooser.value = '';
             self.updateFieldRequirements(chooser, this.value, 'M2ePro-required-when-visible');
         }
-        // --
+        // ---------------------------------------
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     onChangeWorldwideId: function()
     {
@@ -307,7 +298,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     setCategory: function(categoryInfo, notSetProductTypeForceIfOnlyOne)
     {
@@ -385,7 +376,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         });
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     resetCategory: function()
     {
@@ -412,7 +403,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         this.specificHandler.reset();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     prepareEditMode: function()
     {
@@ -467,7 +458,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         );
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showCategoryWarning: function(item)
     {
@@ -501,7 +492,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         !atLeastOneWarningShown && $('category_warning_messages').hide();
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     updateCategoryPathSpan: function(path)
     {
@@ -553,7 +544,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         });
     },
 
-    //##################################
+    //########################################
 
     resetManufacturerPartNumberRequired: function()
     {
@@ -593,7 +584,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         chooser.removeAttribute('required_attribute_for_new_asin');
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     updateManufacturerPartNumberRequired: function()
     {
@@ -672,7 +663,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         }
     },
 
-    //##################################
+    //########################################
 
     updateAvailableProductTypes: function()
     {
@@ -770,7 +761,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         return result;
     },
 
-    //##################################
+    //########################################
 
     updateSpanRequirements: function(element, dependence)
     {
@@ -784,7 +775,7 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
     {
         className = className || 'required-entry';
 
-        // --
+        // ---------------------------------------
         var firstOption = element.select('option').first();
         if (firstOption.value == '0') {
 
@@ -803,24 +794,24 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
                 }));
             }
         }
-        // --
+        // ---------------------------------------
 
-        // --
+        // ---------------------------------------
         if (parseInt(dependence) && element.value == 0) {
             element.value = '';
         }
-        // --
+        // ---------------------------------------
 
-        //--
+        // ---------------------------------------
         parseInt(dependence) ? element.addClassName(className)
                              : element.removeClassName(className);
-        //--
+        // ---------------------------------------
 
         element.simulate('change');
         this.updateSpanRequirements(element, dependence);
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     getInterfaceCategoryPath: function(categoryInfo, withBrowseNodeId)
     {
@@ -832,12 +823,12 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         return !withBrowseNodeId ? path : path + ' ('+categoryInfo.browsenode_id+')';
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     goToGeneralTab: function()
     {
         amazonTemplateDescriptionEditTabsJsTabs.showTabContent($('amazonTemplateDescriptionEditTabs_general'));
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

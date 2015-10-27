@@ -1,11 +1,11 @@
 CommonAmazonTemplateDescriptionDefinitionHandler = Class.create();
 CommonAmazonTemplateDescriptionDefinitionHandler.prototype = Object.extend(new CommonHandler(), {
 
-    //----------------------------------
+    // ---------------------------------------
 
     initialize: function() { },
 
-    //----------------------------------
+    // ---------------------------------------
 
     title_mode_change: function()
     {
@@ -64,7 +64,7 @@ CommonAmazonTemplateDescriptionDefinitionHandler.prototype = Object.extend(new C
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     volumeModeChange: function(customValueTr, customAttributeTr, weightUnitTr, weightUnitMode, value)
     {
@@ -127,7 +127,7 @@ CommonAmazonTemplateDescriptionDefinitionHandler.prototype = Object.extend(new C
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     item_dimensions_volume_mode_change: function()
     {
@@ -175,7 +175,7 @@ CommonAmazonTemplateDescriptionDefinitionHandler.prototype = Object.extend(new C
         );
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     package_dimensions_volume_mode_change: function()
     {
@@ -200,7 +200,7 @@ CommonAmazonTemplateDescriptionDefinitionHandler.prototype = Object.extend(new C
         );
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     package_weight_mode_change: function()
     {
@@ -254,7 +254,7 @@ CommonAmazonTemplateDescriptionDefinitionHandler.prototype = Object.extend(new C
         );
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     multi_element_mode_change: function(type, max)
     {
@@ -358,7 +358,7 @@ CommonAmazonTemplateDescriptionDefinitionHandler.prototype = Object.extend(new C
         }
     },
 
-    //----------------------------------
+    // ---------------------------------------
 
     showElement: function(type)
     {
@@ -420,7 +420,7 @@ CommonAmazonTemplateDescriptionDefinitionHandler.prototype = Object.extend(new C
 
     forceFillUpElement: function(type, value)
     {
-        // -- check if already rendered. render if need.
+        // check if already rendered. render if need.
         var neededTr = null;
         $$('.' + type + '_tr').each(function(obj) {
             if ($(obj).visible() && $(obj).select('input[name="definition[' + type + '][]"]')[0].value == value) {
@@ -439,9 +439,9 @@ CommonAmazonTemplateDescriptionDefinitionHandler.prototype = Object.extend(new C
 
             neededTr = emptyVisibleTrs.pop();
         }
-        // --
+        // ---------------------------------------
 
-        // --
+        // ---------------------------------------
         var input = neededTr.down('input[type="text"]');
 
         input.setAttribute('disabled', 'disabled');
@@ -455,7 +455,7 @@ CommonAmazonTemplateDescriptionDefinitionHandler.prototype = Object.extend(new C
 
         neededTr.setAttribute('undeletable', '1');
         neededTr.down('td.attributes-container-td').hide();
-        // --
+        // ---------------------------------------
 
         $('hide_' + type + '_action').addClassName('action-disabled');
         this.multi_element_keyup(type, {value:' '});
@@ -484,5 +484,5 @@ CommonAmazonTemplateDescriptionDefinitionHandler.prototype = Object.extend(new C
         $('hide_' + type + '_action').removeClassName('action-disabled');
     }
 
-    //----------------------------------
+    // ---------------------------------------
 });

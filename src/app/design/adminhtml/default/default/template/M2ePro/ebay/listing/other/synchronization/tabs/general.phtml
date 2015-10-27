@@ -1,5 +1,8 @@
 <div id="block_notice_ebay_listing_other_synchronization_general" class="block_notices_module" title="<?php echo Mage::helper('M2ePro')->__('General'); ?>">
-    <?php echo Mage::helper('M2ePro')->__('On this Tab you can enable or disable Custom data Synchronization of Items in M2E Pro 3rd Party Listing with Magento Products they are Mapped to.'); ?>
+    <?php echo Mage::helper('M2ePro')->__('On this Tab you can enable or disable Custom data Synchronization of Items in M2E Pro 3rd Party Listing with Magento Products they are Mapped to.</br></br>
+        More detailed information about ability to work with this Page you can find <a href="%url%" target="_blank">here</a>.',
+        Mage::helper('M2ePro/Module_Support')->getDocumentationUrl(NULL, NULL, 'x/AQAJAQ')
+    ); ?>
 </div>
 
 <?php
@@ -103,8 +106,12 @@
 
             <table class="form-list" cellspacing="0" cellpadding="0">
 
-                <input type="hidden" id="qty" name="qty" value="<?php echo $sourceData['qty']; ?>">
-                <input type="hidden" id="qty_attribute" name="qty_attribute" value="<?php echo $attributes['qty']; ?>">
+                <tr style="display: none;">
+                    <td style="display: none;">
+                        <input type="hidden" id="qty" name="qty" value="<?php echo $sourceData['qty']; ?>">
+                        <input type="hidden" id="qty_attribute" name="qty_attribute" value="<?php echo $attributes['qty']; ?>">
+                    </td>
+                </tr>
 
                 <tr>
                     <td class="label">
@@ -123,8 +130,9 @@
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('<b>Product QTY</b> - eBay Listing Quantity will be synchronized with Magento Product Quantity.
-    <br/><b>Magento Attribute</b> - eBay Listing Quantity will be synchronized with Attribute Value.
-'); ?></span>
+                                <br/><b>Magento Attribute</b> - eBay Listing Quantity will be synchronized with Attribute Value.
+                                '); ?>
+                            </span>
                         </p>
                     </td>
                 </tr>
@@ -135,8 +143,12 @@
                     </td>
                 </tr>
 
-                <input type="hidden" id="price" name="price" value="<?php echo $sourceData['price']; ?>">
-                <input type="hidden" id="price_attribute" name="price_attribute" value="<?php echo $attributes['price']; ?>">
+                <tr style="display: none;">
+                    <td style="display: none;">
+                        <input type="hidden" id="price" name="price" value="<?php echo $sourceData['price']; ?>">
+                        <input type="hidden" id="price_attribute" name="price_attribute" value="<?php echo $attributes['price']; ?>">
+                    </td>
+                </tr>
 
                 <tr>
                     <td class="label">
@@ -155,10 +167,11 @@
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('
-    <b>Product Price</b> - eBay Listing Price will be synchronized with the original Magento Product Price.<br/>
-    <b>Special Price</b> - eBay Listing Price will be synchronized with the Special Price of Magento Product.<br/>
-    <b>Magento Attribute</b> - eBay Listing Price will be synchronized with Attribute Value.
-'); ?></span>
+                                <b>Product Price</b> - eBay Listing Price will be synchronized with the original Magento Product Price.<br/>
+                                <b>Special Price</b> - eBay Listing Price will be synchronized with the Special Price of Magento Product.<br/>
+                                <b>Magento Attribute</b> - eBay Listing Price will be synchronized with Attribute Value.
+                                '); ?>
+                            </span>
                         </p>
                     </td>
                 </tr>
@@ -169,8 +182,12 @@
                     </td>
                 </tr>
 
-                <input type="hidden" id="title" name="title" value="<?php echo $sourceData['title']; ?>">
-                <input type="hidden" id="title_attribute" name="title_attribute" value="<?php echo $attributes['title']; ?>">
+                <tr style="display: none;">
+                    <td style="display: none;">
+                        <input type="hidden" id="title" name="title" value="<?php echo $sourceData['title']; ?>">
+                        <input type="hidden" id="title_attribute" name="title_attribute" value="<?php echo $attributes['title']; ?>">
+                    </td>
+                </tr>
 
                 <tr>
                     <td class="label">
@@ -188,9 +205,10 @@
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('
-    <b>Product Name</b> - eBay Listing Title will be synchronized with the original Magento Product name.<br/>
-    <b>Magento Attribute</b> - eBay Listing Title will be synchronized with Attribute Value.
-    '); ?></span>
+                                <b>Product Name</b> - eBay Listing Title will be synchronized with the original Magento Product name.<br/>
+                                <b>Magento Attribute</b> - eBay Listing Title will be synchronized with Attribute Value.
+                                '); ?>
+                            </span>
                         </p>
                     </td>
                 </tr>
@@ -201,8 +219,12 @@
                     </td>
                 </tr>
 
-                <input type="hidden" id="sub_title" name="sub_title" value="<?php echo $sourceData['sub_title']; ?>">
-                <input type="hidden" id="sub_title_attribute" name="sub_title_attribute" value="<?php echo $attributes['sub_title']; ?>">
+                <tr style="display: none;">
+                    <td style="display: none;">
+                        <input type="hidden" id="sub_title" name="sub_title" value="<?php echo $sourceData['sub_title']; ?>">
+                        <input type="hidden" id="sub_title_attribute" name="sub_title_attribute" value="<?php echo $attributes['sub_title']; ?>">
+                    </td>
+                </tr>
 
                 <tr>
                     <td class="label">
@@ -229,8 +251,12 @@
                     </td>
                 </tr>
 
-                <input type="hidden" id="description" name="description" value="<?php echo $sourceData['description']; ?>">
-                <input type="hidden" id="description_attribute" name="description_attribute" value="<?php echo $attributes['description']; ?>">
+                <tr style="display: none;">
+                    <td style="display: none;">
+                        <input type="hidden" id="description" name="description" value="<?php echo $sourceData['description']; ?>">
+                        <input type="hidden" id="description_attribute" name="description_attribute" value="<?php echo $attributes['description']; ?>">
+                    </td>
+                </tr>
 
                 <tr>
                     <td class="label">
@@ -249,10 +275,11 @@
                         </select>
                         <p class="note">
                             <span><?php echo Mage::helper('M2ePro')->__('
-    <b>Product Description</b> - eBay Listing Description will be synchronized with the Original Description of Magento Product.<br/>
-    <b>Product Short Description</b> - eBay Listing Description will be synchronized with the Original Short Magento Product Description.<br/>
-    <b>Magento Attribute</b> - eBay Listing Description will be synchronized with Attribute Value.
-    '); ?></span>
+                                <b>Product Description</b> - eBay Listing Description will be synchronized with the Original Description of Magento Product.<br/>
+                                <b>Product Short Description</b> - eBay Listing Description will be synchronized with the Original Short Magento Product Description.<br/>
+                                <b>Magento Attribute</b> - eBay Listing Description will be synchronized with Attribute Value.
+                                '); ?>
+                            </span>
                         </p>
                     </td>
                 </tr>
