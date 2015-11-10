@@ -84,6 +84,9 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
         curl_setopt($curlObject, CURLOPT_HEADER, false);
 
         // set the headers using the array of headers
+        if ($hostName = $this->getCurrentHostName()) {
+            $headers[] = "Host:{$hostName}";
+        }
         curl_setopt($curlObject, CURLOPT_HTTPHEADER, $headers);
 
         // set the data body of the request
@@ -137,6 +140,11 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
     private function getCurrentBaseUrl()
     {
         return $this->getBaseUrlByIndex($this->getCurrentBaseUrlIndex());
+    }
+
+    private function getCurrentHostName()
+    {
+        return $this->getHostNameByIndex($this->getCurrentBaseUrlIndex());
     }
 
     // ---------------------------------------
@@ -202,6 +210,11 @@ class Ess_M2ePro_Helper_Server extends Mage_Core_Helper_Abstract
     private function getBaseUrlByIndex($index)
     {
         return Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/','baseurl_'.$index);
+    }
+
+    private function getHostNameByIndex($index)
+    {
+        return Mage::helper('M2ePro/Primary')->getConfig()->getGroupValue('/server/','hostname_'.$index);
     }
 
     //########################################

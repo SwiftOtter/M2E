@@ -122,13 +122,7 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         $this->stepData = array();
 
         if (!$this->setNextStep()) {
-            $this->getListingProduct()->setData(
-                'search_settings_status', Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_NOT_FOUND
-            );
-            $this->getListingProduct()->setData('search_settings_data', null);
-
-            $this->getListingProduct()->save();
-
+            $this->setNotFoundSearchStatus();
             return true;
         }
 
@@ -188,6 +182,16 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         $result = reset($result);
 
         $generalId = $this->getGeneralIdFromResult($result);
+
+        if ($this->step == self::STEP_MAGENTO_TITLE && $result['title'] !== $params['query']) {
+            $this->setNotFoundSearchStatus();
+            return;
+        }
+
+        if ($this->step == self::STEP_GENERAL_ID && $generalId !== $params['query']) {
+            $this->setNotFoundSearchStatus();
+            return;
+        }
 
         $generalIdSearchInfo = array(
             'is_set_automatic' => true,
@@ -409,6 +413,18 @@ class Ess_M2ePro_Model_Amazon_Search_Settings
         $attributeMatcher->setDestinationAttributes(array_keys($result['variations']['set']));
 
         return $attributeMatcher;
+    }
+
+    //########################################
+
+    private function setNotFoundSearchStatus()
+    {
+        $this->getListingProduct()->setData(
+            'search_settings_status', Ess_M2ePro_Model_Amazon_Listing_Product::SEARCH_SETTINGS_STATUS_NOT_FOUND
+        );
+        $this->getListingProduct()->setData('search_settings_data', null);
+
+        $this->getListingProduct()->save();
     }
 
     //########################################

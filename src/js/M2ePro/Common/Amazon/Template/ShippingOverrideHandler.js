@@ -71,8 +71,8 @@ CommonAmazonTemplateShippingOverrideHandler.prototype = Object.extend(new Common
 
         var attributeEl = row.down('.shipping-override-cost-custom-attribute');
         attributeEl.addClassName('M2ePro-custom-attribute-can-be-created');
-        var handlerObj = window['AttributeCreator_shipping_override_cost_custom_attribute_' + this.rulesIndex + '_Obj']
-            = new AttributeCreator();
+
+        var handlerObj = new AttributeCreator('shipping_override_cost_custom_attribute_' + this.rulesIndex);
         handlerObj.setSelectObj(attributeEl);
         handlerObj.injectAddOption();
     },

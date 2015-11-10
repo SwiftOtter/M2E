@@ -26,8 +26,8 @@ $formData = array_merge($defaults, $formData);
 
     Event.observe(window, 'load', function() {
         $('relist_mode')
-                .observe('change', EbayListingOtherSynchronizationHandlerObj.relist_mode_change)
-                .simulate('change');
+            .observe('change', EbayListingOtherSynchronizationHandlerObj.relist_mode_change)
+            .simulate('change');
         $('relist_qty')
             .observe('change', EbayListingOtherSynchronizationHandlerObj.relist_qty_change)
             .simulate('change');

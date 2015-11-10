@@ -78,5 +78,10 @@ abstract class Ess_M2ePro_Block_Adminhtml_Switcher extends Mage_Adminhtml_Block_
 
     abstract public function getDefaultOptionName();
 
+    public function getDefaultOptionValue()
+    {
+        return 'all';
+    }
+
     //########################################
 }

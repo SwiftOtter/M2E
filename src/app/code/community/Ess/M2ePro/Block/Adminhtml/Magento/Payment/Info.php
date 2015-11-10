@@ -144,7 +144,7 @@ class Ess_M2ePro_Block_Adminhtml_Magento_Payment_Info extends Mage_Payment_Block
         $oldPackageName = $design->getPackageName();
 
         $design->setArea('adminhtml');
-        $design->setPackageName(Mage::getStoreConfig('design/package/name', $this->getOrder()->getStoreId()));
+        $design->setPackageName(Mage::getStoreConfig('design/package/name', Mage::app()->getStore()->getId()));
 
         $result = parent::renderView();
 

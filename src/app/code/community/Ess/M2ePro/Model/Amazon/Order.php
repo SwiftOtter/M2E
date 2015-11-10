@@ -108,6 +108,34 @@ class Ess_M2ePro_Model_Amazon_Order extends Ess_M2ePro_Model_Component_Child_Ama
             ->setData($address);
     }
 
+    //########################################
+
+    public function getShipDateFrom()
+    {
+        $shippingDates = $this->getSettings('shipping_dates');
+        return !empty($shippingDates['ship']['from']) ? $shippingDates['ship']['from'] : NULL;
+    }
+
+    public function getShipDateTo()
+    {
+        $shippingDates = $this->getSettings('shipping_dates');
+        return !empty($shippingDates['ship']['to']) ? $shippingDates['ship']['to'] : NULL;
+    }
+
+    public function getDeliveryDateFrom()
+    {
+        $shippingDates = $this->getSettings('shipping_dates');
+        return !empty($shippingDates['delivery']['from']) ? $shippingDates['delivery']['from'] : NULL;
+    }
+
+    public function getDeliveryDateTo()
+    {
+        $shippingDates = $this->getSettings('shipping_dates');
+        return !empty($shippingDates['delivery']['to']) ? $shippingDates['delivery']['to'] : NULL;
+    }
+
+    //########################################
+
     /**
      * @return float
      */

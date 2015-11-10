@@ -333,7 +333,7 @@ CommonAmazonTemplateDescriptionCategorySpecificGridRowRenderer = Class.create(Co
 
         select.observe('change', this.onChangeValue.bind(this));
 
-        var handlerObj = window['AttributeCreator_' + select.id + '_Obj'] = new AttributeCreator();
+        var handlerObj = new AttributeCreator(select.id);
         handlerObj.setSelectObj(select);
         handlerObj.injectAddOption();
 

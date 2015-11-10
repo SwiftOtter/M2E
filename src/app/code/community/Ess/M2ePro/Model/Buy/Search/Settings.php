@@ -115,9 +115,16 @@ class Ess_M2ePro_Model_Buy_Search_Settings
             return $this->process();
         }
 
+        $connectorParams = array(
+            'step' => $this->step,
+            'query' => $this->getQueryParam(),
+            'search_method' => 'byQuery',
+            'listing_product_id' => $this->getListingProduct()->getId(),
+        );
+
         $dispatcherObject = Mage::getModel('M2ePro/Connector_Buy_Dispatcher');
         $connectorObj = $dispatcherObject->getConnector('settings', 'byQuery', 'requester',
-                                                        $this->getConnectorParams(),
+                                                        $connectorParams,
                                                         $this->getListingProduct()->getAccount(),
                                                         'Ess_M2ePro_Model_Buy_Search');
 
@@ -138,7 +145,7 @@ class Ess_M2ePro_Model_Buy_Search_Settings
 
         $type = 'string';
         if ($this->step != self::STEP_MAGENTO_TITLE) {
-            $type = $this->getSearchType();
+            $type = Mage::helper('M2ePro/Component_Buy')->isGeneralId($params['query']) ? 'sku' : false;
         }
 
         $searchSettingsData = array(
@@ -203,16 +210,6 @@ class Ess_M2ePro_Model_Buy_Search_Settings
         return true;
     }
 
-    private function getConnectorParams()
-    {
-        return array(
-            'step' => $this->step,
-            'query' => $this->getQueryParam(),
-            'search_method' => 'byQuery',
-            'listing_product_id' => $this->getListingProduct()->getId(),
-        );
-    }
-
     private function getGeneralIdFromResult($result)
     {
         if (!isset($result['variations'])) {
@@ -268,7 +265,8 @@ class Ess_M2ePro_Model_Buy_Search_Settings
                 if (empty($generalIdMode)) {
                     $generalIdValue = $this->getBuyListingProduct()->getListingSource()->getSearchGeneralId();
 
-                    $this->isGeneralId($generalIdValue) && $query = $generalIdValue;
+                    Mage::helper('M2ePro/Component_Buy')
+                        ->isGeneralId($generalIdValue) && $query = $generalIdValue;
                 }
 
                 break;
@@ -283,31 +281,6 @@ class Ess_M2ePro_Model_Buy_Search_Settings
         }
 
         return $query;
-    }
-
-    private function getSearchType()
-    {
-        /* @var $listing Ess_M2ePro_Model_Buy_Listing */
-        $listing = $this->listingProduct->getListing()->getChildObject();
-
-        $searchType = false;
-
-        if ($listing->isGeneralIdGeneralIdMode()) {
-            $searchType = 'sku';
-        }
-
-        return $searchType;
-    }
-
-    //########################################
-
-    private function isGeneralId($query)
-    {
-        if (empty($query)) {
-            return false;
-        }
-
-        return preg_match('/^\d{8,9}$/', $query);
     }
 
     //########################################

@@ -72,14 +72,6 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_RequestData
         return isset($this->data['product_id']);
     }
 
-    /**
-     * @return bool
-     */
-    public function hasProductIdType()
-    {
-        return isset($this->data['product_id_type']);
-    }
-
     // ---------------------------------------
 
     /**
@@ -219,11 +211,6 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_RequestData
     public function getProductId()
     {
         return $this->hasProductId() ? $this->data['product_id'] : NULL;
-    }
-
-    public function getProductIdType()
-    {
-        return $this->hasProductIdType() ? $this->data['product_id_type'] : NULL;
     }
 
     // ---------------------------------------

@@ -27,7 +27,7 @@ class Ess_M2ePro_Helper_Module_Renderer_Description extends Mage_Core_Helper_Abs
         $oldPackageName = $design->getPackageName();
 
         $design->setArea('adminhtml');
-        $design->setPackageName(Mage::getStoreConfig('design/package/name', $magentoProduct->getStoreId()));
+        $design->setPackageName(Mage::getStoreConfig('design/package/name', Mage::app()->getStore()->getId()));
 
         $text = $this->insertAttributes($text, $magentoProduct);
         $text = $this->insertImages($text, $magentoProduct);

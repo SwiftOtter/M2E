@@ -7,24 +7,23 @@
 <script type="text/javascript">
 
     M2ePro.translator.add(<?php echo Zend_Json::encode(array(
-        'Invalid attribute code'      => Mage::helper('M2ePro')->__('Invalid Attribute Code'),
+        'Invalid attribute code' => Mage::helper('M2ePro')->__('Invalid Attribute Code'),
+        'Attribute with the same code already exists.' => Mage::helper('M2ePro')->__('Attribute with the same code already exists.'),
         'Attribute has been created.' => Mage::helper('M2ePro')->__('Attribute has been created.'),
     )); ?>);
 
+    var handler = window['<?php echo $this->handlerId(); ?>'];
+
     Validation.add('M2ePro-validate-attribute-code', M2ePro.translator.translate('Invalid attribute code'), function(value, el) {
-
-        if (!$(el).up('tr').visible()) {
-            return true;
-        }
-
-        if (!value.match(/^[a-z][a-z_0-9]{1,254}$/)) {
-            return false;
-        }
-
-        return true;
+        return handler.validateAttributeCode(value, el);
     });
 
-    createAttributeForm = new varienForm('general_create_new_attribute_form', '<?php echo $this->getValidationUrl(); ?>');
+    Validation.add('M2ePro-validate-attribute-code-to-be-unique', M2ePro.translator.translate('Attribute with the same code already exists.'), function(value, el) {
+        return handler.validateAttributeCodeToBeUnique(value, el);
+    });
+
+    $('store_label').observe('keyup', handler.onChangeLabel.bind(handler));
+    $('code').observe('change', handler.onChangeCode.bind(handler));
 
 </script>
 
@@ -59,21 +58,21 @@
 
             <table class="form-list" cellspacing="0" cellpadding="0">
 
-                <tr <?php if (!$this->showCodeInput()) : echo 'style="display: none;"'; endif; ?>>
-                    <td class="label">
-                        <label><?php echo Mage::helper('M2ePro')->__('Attribute Code'); ?>: <span class="required">*</span></label>
-                    </td>
-                    <td class="value">
-                        <input name="code" type="text" class="M2ePro-required-when-visible M2ePro-validate-attribute-code" />
-                    </td>
-                </tr>
-
                 <tr>
                     <td class="label">
                         <label><?php echo Mage::helper('M2ePro')->__('Attribute Label'); ?>: <span class="required">*</span></label>
                     </td>
                     <td class="value">
-                        <input name="store_label" type="text" class="required-entry" />
+                        <input name="store_label" id="store_label" type="text" class="required-entry" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Attribute Code'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input name="code" id="code" type="text" class="M2ePro-required-when-visible M2ePro-validate-attribute-code M2ePro-validate-attribute-code-to-be-unique" />
                     </td>
                 </tr>
 

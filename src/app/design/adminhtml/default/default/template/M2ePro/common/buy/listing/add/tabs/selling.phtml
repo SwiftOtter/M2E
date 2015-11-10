@@ -196,7 +196,7 @@
                     <td class="value">
                         <input type="hidden" id="sku_custom_attribute" name="sku_custom_attribute" value="<?php echo $this->getData('sku_custom_attribute'); ?>" />
 
-                        <select name="sku_mode" id="sku_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text" show_code_input="1">
+                        <select name="sku_mode" id="sku_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text">
                             <option value="<?php echo Ess_M2ePro_Model_Buy_Listing::SKU_MODE_PRODUCT_ID ?>" <?php if ($this->getData('sku_mode') == Ess_M2ePro_Model_Buy_Listing::SKU_MODE_PRODUCT_ID) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product ID') ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Buy_Listing::SKU_MODE_DEFAULT ?>" <?php if ($this->getData('sku_mode') == Ess_M2ePro_Model_Buy_Listing::SKU_MODE_DEFAULT) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Product SKU') ?></option>
 

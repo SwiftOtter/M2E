@@ -932,15 +932,17 @@ EbayTemplateShippingHandler = Class.create(CommonHandler, {
 
         // ---------------------------------------
         if (!EbayTemplateShippingHandlerObj.isSimpleViewMode || renderSaved) {
+
             AttributeHandlerObj.renderAttributesWithEmptyOption('shipping[shipping_cost_attribute][' + i + ']', row.down('.shipping-cost-ca'));
-            var handlerObj = window['AttributeCreator_shipping[shipping_cost_attribute][' + i + ']_Obj'] = new AttributeCreator();
+            var handlerObj = new AttributeCreator('shipping[shipping_cost_attribute][' + i + ']');
             handlerObj.setSelectObj($('shipping[shipping_cost_attribute][' + i + ']'));
             handlerObj.injectAddOption();
 
             AttributeHandlerObj.renderAttributesWithEmptyOption('shipping[shipping_cost_additional_attribute][' + i + ']', row.down('.shipping-cost-additional-ca'));
-            var handlerObj = window['AttributeCreator_shipping[shipping_cost_additional_attribute][' + i + ']_Obj'] = new AttributeCreator();
+            var handlerObj = new AttributeCreator('shipping[shipping_cost_additional_attribute][' + i + ']');
             handlerObj.setSelectObj($('shipping[shipping_cost_additional_attribute][' + i + ']'));
             handlerObj.injectAddOption();
+
         } else {
             // remove custom attribute option
             row.down('.cost-mode').remove(2);
@@ -979,7 +981,7 @@ EbayTemplateShippingHandler = Class.create(CommonHandler, {
                     new Element('option', {selected: true})
                 ).insert(M2ePro.translator.translate('None'));
 
-                var handlerObj = window['AttributeCreator_shipping[shipping_cost_surcharge_attribute][' + i + ']_Obj'] = new AttributeCreator();
+                var handlerObj = new AttributeCreator('shipping[shipping_cost_surcharge_attribute][' + i + ']');
                 handlerObj.setSelectObj($('shipping[shipping_cost_surcharge_attribute][' + i + ']'));
                 handlerObj.injectAddOption();
             }

@@ -1,3 +1,13 @@
+* 6.3.8 (r9727) (29/10/2015)
+
+* Added: Ability to create Magento Attributes 'on-the-fly' with drop-down and multi-selection types
+* Added: Ability to use Magento Attributes creation 'on-the-fly for QTY/Price and Categories settings
+* Improvement: More stable connections with M2E Pro servers (direct calls to the IP address, DNS is not used)
+* Improvement: [Amazon] Number of Items and Item Package Quantity moved to the Definition Tab of Description Policy
+* Improvement: [Rakuten.com] Automatic and Manual Search + List action performance/features
+* Fix: Fatal error: Call to a member function getStoreId() on a non-object (Orders/Invoices/Shipments)
+* Fix: Exception during Magento Product saving if it has a relation with unmatched Amazon Individual Product
+
 * 6.3.7 (r9707) (27/10/2015)
 
 * Added: Ability to create New Magento Attribute on fly during Policies configuring

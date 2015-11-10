@@ -18,10 +18,6 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Request
             'product_id' => $this->validatorsData['general_id'],
         );
 
-        if (!empty($this->validatorsData['general_id_mode'])) {
-            $data['product_id_type'] = $this->validatorsData['general_id_mode'] - 1;
-        }
-
         $data = array_merge(
             $data,
             $this->getRequestDetails()->getData(),

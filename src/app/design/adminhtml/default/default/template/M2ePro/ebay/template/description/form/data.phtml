@@ -320,7 +320,7 @@
             <label for="image_main"><?php echo Mage::helper('M2ePro')->__('Main Image'); ?>:</label>
         </td>
         <td class="value" style="width: auto;">
-            <select id="image_main" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select" name="description[image_main_mode]">
+            <select id="image_main" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select,multiselect" name="description[image_main_mode]">
                 <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::IMAGE_MAIN_MODE_NONE; ?>" <?php if ($formData['image_main_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::IMAGE_MAIN_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
                 <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::IMAGE_MAIN_MODE_PRODUCT; ?>" <?php if ($formData['image_main_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::IMAGE_MAIN_MODE_PRODUCT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Base Image'); ?></option>
                 <optgroup class="M2ePro-custom-attribute-optgroup" label="<?php echo Mage::helper('M2ePro')->__('Magento Attributes'); ?>">
@@ -387,7 +387,7 @@
             <label for="gallery_images"><?php echo Mage::helper('M2ePro')->__('Gallery Images'); ?>:</label>
         </td>
         <td class="value" style="width: auto;">
-            <select id="gallery_images" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select" name="description[gallery_images_mode]">
+            <select id="gallery_images" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select,multiselect" name="description[gallery_images_mode]">
 
                 <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::GALLERY_IMAGES_MODE_NONE; ?>" <?php if ($formData['gallery_images_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::GALLERY_IMAGES_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
 
@@ -454,7 +454,7 @@
             <label for="variation_images"><?php echo Mage::helper('M2ePro')->__('Variation Attribute Images'); ?>:</label>
         </td>
         <td class="value" style="width: auto;">
-            <select id="variation_images" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select" name="description[variation_images_mode]">
+            <select id="variation_images" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select,multiselect" name="description[variation_images_mode]">
 
                 <option value="<?php echo Ess_M2ePro_Model_Ebay_Template_Description::VARIATION_IMAGES_MODE_NONE; ?>" <?php if ($formData['variation_images_mode'] == Ess_M2ePro_Model_Ebay_Template_Description::VARIATION_IMAGES_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
 

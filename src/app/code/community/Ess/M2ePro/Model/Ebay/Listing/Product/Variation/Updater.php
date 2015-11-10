@@ -155,6 +155,10 @@ class Ess_M2ePro_Model_Ebay_Listing_Product_Variation_Updater
         /** @var Ess_M2ePro_Model_Listing_Product_Variation[] $listingProductVariations */
         $listingProductVariations = $listingProduct->getVariations(true);
 
+        if (empty($listingProductVariations)) {
+            return;
+        }
+
         foreach ($listingProductVariations as $listingProductVariation) {
 
             $listingProductVariationOptions = $listingProductVariation->getOptions();

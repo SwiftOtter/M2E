@@ -29,7 +29,7 @@ function initializationCustomAttributeInputs()
 {
     $$('select.M2ePro-custom-attribute-can-be-created').each(function(selectObj){
 
-        var handlerObj = window['AttributeCreator_' + selectObj.id + '_Obj'] = new AttributeCreator();
+        var handlerObj = new AttributeCreator(selectObj.id);
         handlerObj.setSelectObj(selectObj);
 
         if (handlerObj.alreadyHaveAddedOption()) {

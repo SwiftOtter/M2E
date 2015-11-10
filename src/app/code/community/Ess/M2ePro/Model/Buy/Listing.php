@@ -24,8 +24,8 @@ class Ess_M2ePro_Model_Buy_Listing extends Ess_M2ePro_Model_Component_Child_Buy_
     const GENERATE_SKU_MODE_NO  = 0;
     const GENERATE_SKU_MODE_YES = 1;
 
-    const GENERAL_ID_MODE_NOT_SET       = 0;
-    const GENERAL_ID_MODE_GENERAL_ID    = 1;
+    const GENERAL_ID_MODE_NOT_SET          = 0;
+    const GENERAL_ID_MODE_CUSTOM_ATTRIBUTE = 1;
 
     const SEARCH_BY_MAGENTO_TITLE_MODE_NONE = 0;
     const SEARCH_BY_MAGENTO_TITLE_MODE_YES  = 1;
@@ -364,9 +364,9 @@ class Ess_M2ePro_Model_Buy_Listing extends Ess_M2ePro_Model_Component_Child_Buy_
     /**
      * @return bool
      */
-    public function isGeneralIdGeneralIdMode()
+    public function isGeneralIdAttributeMode()
     {
-        return $this->getGeneralIdMode() == self::GENERAL_ID_MODE_GENERAL_ID;
+        return $this->getGeneralIdMode() == self::GENERAL_ID_MODE_CUSTOM_ATTRIBUTE;
     }
 
     /**

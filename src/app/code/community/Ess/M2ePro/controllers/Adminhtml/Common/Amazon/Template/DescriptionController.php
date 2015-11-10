@@ -116,15 +116,7 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
             'registered_parameter',
 
             'worldwide_id_mode',
-            'worldwide_id_custom_attribute',
-
-            'item_package_quantity_mode',
-            'item_package_quantity_custom_value',
-            'item_package_quantity_custom_attribute',
-
-            'number_of_items_mode',
-            'number_of_items_custom_value',
-            'number_of_items_custom_attribute'
+            'worldwide_id_custom_attribute'
         );
 
         $dataForAdd = array();
@@ -164,6 +156,14 @@ class Ess_M2ePro_Adminhtml_Common_Amazon_Template_DescriptionController
             'manufacturer_part_number_mode',
             'manufacturer_part_number_custom_value',
             'manufacturer_part_number_custom_attribute',
+
+            'item_package_quantity_mode',
+            'item_package_quantity_custom_value',
+            'item_package_quantity_custom_attribute',
+
+            'number_of_items_mode',
+            'number_of_items_custom_value',
+            'number_of_items_custom_attribute',
 
             'item_dimensions_volume_mode',
             'item_dimensions_volume_length_custom_value',

@@ -89,51 +89,5 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Source
         return $result;
     }
 
-    /**
-     * @return int|null|string
-     */
-    public function getItemPackageQuantity()
-    {
-        $result = '';
-        $src = $this->getAmazonDescriptionTemplate()->getItemPackageQuantitySource();
-
-        if ($this->getAmazonDescriptionTemplate()->isItemPackageQuantityModeNone()) {
-            $result = NULL;
-        }
-
-        if ($this->getAmazonDescriptionTemplate()->isItemPackageQuantityModeCustomValue()) {
-            $result = (int)$src['value'];
-        }
-
-        if ($this->getAmazonDescriptionTemplate()->isItemPackageQuantityModeCustomAttribute()) {
-            $result = (int)$this->getMagentoProduct()->getAttributeValue($src['attribute']);
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return int|null|string
-     */
-    public function getNumberOfItems()
-    {
-        $result = '';
-        $src = $this->getAmazonDescriptionTemplate()->getNumberOfItemsSource();
-
-        if ($this->getAmazonDescriptionTemplate()->isNumberOfItemsModeNone()) {
-            $result = NULL;
-        }
-
-        if ($this->getAmazonDescriptionTemplate()->isNumberOfItemsModeCustomValue()) {
-            $result = (int)$src['value'];
-        }
-
-        if ($this->getAmazonDescriptionTemplate()->isNumberOfItemsModeCustomAttribute()) {
-            $result = (int)$this->getMagentoProduct()->getAttributeValue($src['attribute']);
-        }
-
-        return $result;
-    }
-
     //########################################
 }

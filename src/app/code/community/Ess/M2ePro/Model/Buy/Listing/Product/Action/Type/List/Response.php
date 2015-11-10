@@ -38,11 +38,7 @@ class Ess_M2ePro_Model_Buy_Listing_Product_Action_Type_List_Response
     {
         $data['sku'] = $this->getRequestData()->getSku();
 
-        $serverProductIdTypeGeneralId = Ess_M2ePro_Model_Buy_Listing::GENERAL_ID_MODE_GENERAL_ID - 1;
-
-        if ($this->getRequestData()->getProductIdType() == $serverProductIdTypeGeneralId) {
-            $data['general_id'] = $this->getRequestData()->getProductId();
-        }
+        $data['general_id'] = $this->getRequestData()->getProductId();
 
         return $data;
     }

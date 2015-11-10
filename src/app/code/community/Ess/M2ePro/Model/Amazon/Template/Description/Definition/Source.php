@@ -112,6 +112,52 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition_Source
     }
 
     /**
+     * @return int|null|string
+     */
+    public function getItemPackageQuantity()
+    {
+        $result = '';
+        $src = $this->getDescriptionDefinitionTemplate()->getItemPackageQuantitySource();
+
+        if ($this->getDescriptionDefinitionTemplate()->isItemPackageQuantityModeNone()) {
+            $result = NULL;
+        }
+
+        if ($this->getDescriptionDefinitionTemplate()->isItemPackageQuantityModeCustomValue()) {
+            $result = (int)$src['value'];
+        }
+
+        if ($this->getDescriptionDefinitionTemplate()->isItemPackageQuantityModeCustomAttribute()) {
+            $result = (int)$this->getMagentoProduct()->getAttributeValue($src['attribute']);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return int|null|string
+     */
+    public function getNumberOfItems()
+    {
+        $result = '';
+        $src = $this->getDescriptionDefinitionTemplate()->getNumberOfItemsSource();
+
+        if ($this->getDescriptionDefinitionTemplate()->isNumberOfItemsModeNone()) {
+            $result = NULL;
+        }
+
+        if ($this->getDescriptionDefinitionTemplate()->isNumberOfItemsModeCustomValue()) {
+            $result = (int)$src['value'];
+        }
+
+        if ($this->getDescriptionDefinitionTemplate()->isNumberOfItemsModeCustomAttribute()) {
+            $result = (int)$this->getMagentoProduct()->getAttributeValue($src['attribute']);
+        }
+
+        return $result;
+    }
+
+    /**
      * @return mixed|string
      * @throws Ess_M2ePro_Model_Exception
      */

@@ -171,7 +171,7 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
 
             $(self.uniqId+'item_specifics_value_custom_attribute_' + counter).insert(self.attributeOptions);
 
-            var handlerObj = window['AttributeCreator_' + self.uniqId + 'item_specifics_value_custom_attribute_' + counter + '_Obj'] = new AttributeCreator();
+            var handlerObj = new AttributeCreator(self.uniqId + 'item_specifics_value_custom_attribute_' + counter);
             handlerObj.setSelectObj($(self.uniqId+'item_specifics_value_custom_attribute_' + counter));
             handlerObj.injectAddOption();
 
@@ -373,7 +373,7 @@ EbayListingCategorySpecificHandler.prototype = Object.extend(new CommonHandler()
             var selectId = this.uniqId+'item_specifics_value_custom_attribute_' + this.counter;
             $(selectId).insert(this.attributeOptions);
 
-            var handlerObj = window['AttributeCreator_' + selectId + '_Obj'] = new AttributeCreator();
+            var handlerObj = new AttributeCreator(selectId);
             handlerObj.setSelectObj($(selectId));
             handlerObj.injectAddOption();
 

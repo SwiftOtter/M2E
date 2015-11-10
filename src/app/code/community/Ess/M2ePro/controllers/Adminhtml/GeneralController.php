@@ -328,6 +328,7 @@ class Ess_M2ePro_Adminhtml_GeneralController
 
         /** @var Ess_M2ePro_Block_Adminhtml_General_CreateAttribute $block */
         $block = $this->getLayout()->createBlock('M2ePro/adminhtml_general_createAttribute');
+        $block->handlerId($post['handler_id']);
 
         if (isset($post['allowed_attribute_types'])) {
             $block->allowedTypes(explode(',', $post['allowed_attribute_types']));
@@ -337,11 +338,26 @@ class Ess_M2ePro_Adminhtml_GeneralController
             $block->applyToAll(false);
         }
 
-        if (isset($post['show_code_input']) && $post['show_code_input']) {
-            $block->showCodeInput(true);
-        }
-
         $this->getResponse()->setBody($block->toHtml());
+    }
+
+    public function generateAttributeCodeByLabelAction()
+    {
+        $label = $this->getRequest()->getParam('store_label');
+        $this->getResponse()->setBody(json_encode(
+            Ess_M2ePro_Model_Magento_Attribute_Builder::generateCodeByLabel($label))
+        );
+    }
+
+    public function isAttributeCodeUniqueAction()
+    {
+        $attributeObj = Mage::getModel('eav/entity_attribute')->loadByCode(
+            Mage::getModel('catalog/product')->getResource()->getTypeId(),
+            $this->getRequest()->getParam('code')
+        );
+
+        $isAttributeUnique = is_null($attributeObj->getId());
+        $this->getResponse()->setBody(json_encode($isAttributeUnique));
     }
 
     public function createAttributeAction()
@@ -350,13 +366,10 @@ class Ess_M2ePro_Adminhtml_GeneralController
         $model = Mage::getModel('M2ePro/Magento_Attribute_Builder');
 
         $model->setLabel($this->getRequest()->getParam('store_label'))
+              ->setCode($this->getRequest()->getParam('code'))
               ->setInputType($this->getRequest()->getParam('input_type'))
               ->setDefaultValue($this->getRequest()->getParam('default_value'))
               ->setScope($this->getRequest()->getParam('scope'));
-
-        $attributeCode = $this->getRequest()->getParam('code');
-        !empty($attributeCode) ? $model->setCode($attributeCode)
-                               : $model->generateCodeByLabel();
 
         $attributeResult = $model->save();
 

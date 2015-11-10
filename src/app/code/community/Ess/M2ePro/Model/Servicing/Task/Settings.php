@@ -80,26 +80,38 @@ class Ess_M2ePro_Model_Servicing_Task_Settings extends Ess_M2ePro_Model_Servicin
         $config = Mage::helper('M2ePro/Primary')->getConfig();
 
         $index = 1;
-        foreach ($data['servers_baseurls'] as $newServerBaseUrl) {
+        foreach ($data['servers_baseurls'] as $newHostName => $newBaseUrl) {
 
-            $oldServerBaseUrl = $config->getGroupValue('/server/','baseurl_'.$index);
+            $oldHostName = $config->getGroupValue('/server/','hostname_'.$index);
+            $oldBaseUrl  = $config->getGroupValue('/server/','baseurl_'.$index);
 
-            if ($oldServerBaseUrl != $newServerBaseUrl) {
-                $config->setGroupValue('/server/', 'baseurl_'.$index, $newServerBaseUrl);
+            if ($oldHostName != $newHostName) {
+                $config->setGroupValue('/server/', 'hostname_'.$index, $newHostName);
+            }
+
+            if ($oldBaseUrl != $newBaseUrl) {
+                $config->setGroupValue('/server/', 'baseurl_'.$index, $newBaseUrl);
             }
 
             $index++;
         }
 
-        for ($deletedIndex=$index; $deletedIndex<100; $deletedIndex++) {
+        for ($deletedIndex = $index; $deletedIndex < 100; $deletedIndex++) {
 
-            $deletedBaseUrl = $config->getGroupValue('/server/','baseurl_'.$deletedIndex);
+            $deletedHostName = $config->getGroupValue('/server/','hostname_'.$deletedIndex);
+            $deletedBaseUrl  = $config->getGroupValue('/server/','baseurl_'.$deletedIndex);
 
-            if (is_null($deletedBaseUrl)) {
+            if (is_null($deletedHostName) && is_null($deletedBaseUrl)) {
                 break;
             }
 
-            $config->deleteGroupValue('/server/','baseurl_'.$deletedIndex);
+            if (!is_null($deletedHostName)) {
+                $config->deleteGroupValue('/server/','hostname_'.$deletedIndex);
+            }
+
+            if (!is_null($deletedBaseUrl)) {
+                $config->deleteGroupValue('/server/','baseurl_'.$deletedIndex);
+            }
         }
     }
 

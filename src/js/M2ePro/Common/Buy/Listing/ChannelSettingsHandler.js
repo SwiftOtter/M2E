@@ -109,20 +109,10 @@ CommonBuyListingChannelSettingsHandler.prototype = Object.extend(new CommonHandl
     {
         var self = BuyListingChannelSettingsHandlerObj;
 
-        if (this.value == self.GENERAL_ID_MODE_GENERAL_ID) {
-            $('general_id_attribute_label').innerHTML = M2ePro.text.general_id_label_bsku;
+        $('general_id_custom_attribute').value = '';
+        if (this.value == self.GENERAL_ID_MODE_CUSTOM_ATTRIBUTE) {
+            self.updateHiddenValue(this, $('general_id_custom_attribute'));
         }
-
-        if (this.value == self.GENERAL_ID_MODE_NOT_SET) {
-            $('general_id_custom_attribute_container').hide();
-        } else {
-            $('general_id_custom_attribute_container').show();
-        }
-    },
-
-    general_id_custom_attribute_change: function()
-    {
-        BuyListingChannelSettingsHandlerObj.hideEmptyOption($('general_id_custom_attribute'));
     },
 
     // ---------------------------------------

@@ -40,6 +40,16 @@ $default = array(
 
         // ---
 
+        'item_package_quantity_mode'             => Ess_M2ePro_Model_Amazon_Template_Description_Definition::ITEM_PACKAGE_QUANTITY_MODE_NONE,
+        'item_package_quantity_custom_value'     => '',
+        'item_package_quantity_custom_attribute' => '',
+
+        'number_of_items_mode'             => Ess_M2ePro_Model_Amazon_Template_Description_Definition::NUMBER_OF_ITEMS_MODE_NONE,
+        'number_of_items_custom_value'     => '',
+        'number_of_items_custom_attribute' => '',
+
+        // ---
+
         'item_dimensions_volume_mode'                    => Ess_M2ePro_Model_Amazon_Template_Description_Definition::DIMENSION_VOLUME_MODE_NONE,
         'item_dimensions_volume_length_custom_value'     => '',
         'item_dimensions_volume_width_custom_value'      => '',
@@ -176,6 +186,16 @@ $allAttributesByInputTypes = array(
 
         $('manufacturer_part_number_mode')
             .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.manufacturer_part_number_mode_change)
+            .simulate('change');
+
+        // ---
+
+        $('item_package_quantity_mode')
+            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.onChangeItemPackageQuantityMode)
+            .simulate('change');
+
+        $('number_of_items_mode')
+            .observe('change', AmazonTemplateDescriptionDefinitionHandlerObj.onChangeNumberOfItemsMode)
             .simulate('change');
 
         // ---
@@ -451,6 +471,98 @@ $allAttributesByInputTypes = array(
                     </td>
                 </tr>
 
+                <tr>
+                    <td colspan="2" style="padding: 10px 0">
+                        <hr style="border: 1px solid silver; border-bottom: none;">
+                    </td>
+                </tr>
+
+                <tr class="entry-edit" id="item_package_quantity_mode_tr">
+                    <td class="label">
+                        <label for="item_package_quantity_mode"><?php echo Mage::helper('M2ePro')->__('Package Quantity') ?>: </label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="item_package_quantity_custom_attribute" name="definition[item_package_quantity_custom_attribute]" value="<?php echo $formData['definition']['item_package_quantity_custom_attribute']; ?>" />
+
+                        <select name="definition[item_package_quantity_mode]" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" id="item_package_quantity_mode">
+                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::ITEM_PACKAGE_QUANTITY_MODE_NONE; ?>" <?php if ($formData['definition']['item_package_quantity_mode'] == Ess_M2ePro_Model_Amazon_Template_Description_Definition::ITEM_PACKAGE_QUANTITY_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['definition']['item_package_quantity_mode'] == Ess_M2ePro_Model_Amazon_Template_Description_Definition::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_VALUE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Custom Value') ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php if ($formData['definition']['item_package_quantity_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['definition']['item_package_quantity_custom_attribute'], $generalAttributesByInputTypes['text_select'])) : ?>
+                                    <option attribute_code="<?php echo $formData['definition']['item_package_quantity_custom_attribute']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected" >
+                                        <?php echo $magentoAttributeHelper->getAttributeLabel($formData['definition']['item_package_quantity_custom_attribute']); ?>
+                                    </option>
+                                <?php endif; ?>
+                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($attribute['code'] == $formData['definition']['item_package_quantity_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <?php echo Mage::helper('M2ePro')->__(
+                                'The number of units included in the Item you are offering for sale, <br/>such that each unit is packaged for individual sale.'
+                            ); ?>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr class="entry-edit" id="item_package_quantity_custom_value_tr">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Package Quantity Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="item_package_quantity_custom_value" name="definition[item_package_quantity_custom_value]" value="<?php echo Mage::helper('M2ePro')->__($formData['definition']['item_package_quantity_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-validate-greater-than" min_value="1" />
+                    </td>
+                </tr>
+
+                <tr class="entry-edit" id="number_of_items_mode_tr">
+                    <td class="label">
+                        <label for="number_of_items_mode"><?php echo Mage::helper('M2ePro')->__('Number of Items') ?>: </label>
+                    </td>
+                    <td class="value">
+                        <input type="hidden" id="number_of_items_custom_attribute" name="definition[number_of_items_custom_attribute]" value="<?php echo $formData['definition']['number_of_items_custom_attribute']; ?>" />
+
+                        <select name="definition[number_of_items_mode]" id="number_of_items_mode" class="M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,select" >
+                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::NUMBER_OF_ITEMS_MODE_NONE; ?>" <?php if ($formData['definition']['number_of_items_mode'] == Ess_M2ePro_Model_Amazon_Template_Description_Definition::NUMBER_OF_ITEMS_MODE_NONE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('None') ?></option>
+                            <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::NUMBER_OF_ITEMS_MODE_CUSTOM_VALUE; ?>" <?php if ($formData['definition']['number_of_items_mode'] == Ess_M2ePro_Model_Amazon_Template_Description_Definition::NUMBER_OF_ITEMS_MODE_CUSTOM_VALUE) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Custom Value') ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php if ($formData['definition']['number_of_items_custom_attribute'] != '' && !$magentoAttributeHelper->isExistInAttributesArray($formData['definition']['number_of_items_custom_attribute'], $generalAttributesByInputTypes['text_select'])) : ?>
+                                    <option attribute_code="<?php echo $formData['definition']['number_of_items_custom_attribute']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE ?>" selected="selected" >
+                                        <?php echo $magentoAttributeHelper->getAttributeLabel($formData['definition']['number_of_items_custom_attribute']); ?>
+                                    </option>
+                                <?php endif; ?>
+                                <?php foreach($generalAttributesByInputTypes['text_select'] as $attribute) : ?>
+                                    <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE ?>" <?php if ($attribute['code'] == $formData['definition']['number_of_items_custom_attribute']): ?>selected="selected"<?php endif; ?>>
+                                        <?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        </select>
+                        <p class="note">
+                            <?php echo Mage::helper('M2ePro')->__(
+                                'The number of discrete Items included in the Item you are offering for sale,
+                                 such that each Item is not packaged for individual sale.<br/><br/>
+                                <strong>For ex.</strong>, if you are selling a case of 10 packages of socks,
+                                and each package contains
+                                <br/>3 pairs of socks, the case would have Package Quantity = 10 and Number of Items = 30.'
+                            ); ?>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr class="entry-edit" id="number_of_items_custom_value_tr">
+                    <td class="label">
+                        <label><?php echo Mage::helper('M2ePro')->__('Number of Items Value'); ?>: <span class="required">*</span></label>
+                    </td>
+                    <td class="value">
+                        <input id="number_of_items_custom_value" name="definition[number_of_items_custom_value]" value="<?php echo Mage::helper('M2ePro')->__($formData['definition']['number_of_items_custom_value']); ?>" type="text" class="input-text M2ePro-required-when-visible M2ePro-validate-greater-than" min_value="1" />
+                    </td>
+                </tr>
+
             </table>
 
         </div>
@@ -476,7 +588,7 @@ $allAttributesByInputTypes = array(
                     <td class="value" style="width: auto;">
                         <input type="hidden" id="image_main_attribute" name="definition[image_main_attribute]" value="<?php echo $formData['definition']['image_main_attribute']; ?>" />
 
-                        <select id="image_main_mode" name="definition[image_main_mode]" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select">
+                        <select id="image_main_mode" name="definition[image_main_mode]" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select,multiselect">
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::IMAGE_MAIN_MODE_NONE; ?>" <?php if ($formData['definition']['image_main_mode'] == Ess_M2ePro_Model_Amazon_Template_Description_Definition::IMAGE_MAIN_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::IMAGE_MAIN_MODE_PRODUCT; ?>" <?php if ($formData['definition']['image_main_mode'] == Ess_M2ePro_Model_Amazon_Template_Description_Definition::IMAGE_MAIN_MODE_PRODUCT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Base Image'); ?></option>
 
@@ -503,7 +615,7 @@ $allAttributesByInputTypes = array(
                         <input type="hidden" id="gallery_images_limit" name="definition[gallery_images_limit]" value="<?php echo $formData['definition']['gallery_images_limit']; ?>" />
                         <input type="hidden" id="gallery_images_attribute" name="definition[gallery_images_attribute]" value="<?php echo $formData['definition']['gallery_images_attribute']; ?>" />
 
-                        <select id="gallery_images_mode" name="definition[gallery_images_mode]" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select">
+                        <select id="gallery_images_mode" name="definition[gallery_images_mode]" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select,multiselect">
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::GALLERY_IMAGES_MODE_NONE; ?>" <?php if ($formData['definition']['gallery_images_mode'] == Ess_M2ePro_Model_Amazon_Template_Description_Definition::GALLERY_IMAGES_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
 
                             <optgroup label="Product Images Quantity">
@@ -534,7 +646,7 @@ $allAttributesByInputTypes = array(
                     <td class="value" style="width: auto;">
                         <input type="hidden" id="image_variation_difference_attribute" name="definition[image_variation_difference_attribute]" value="<?php echo $formData['definition']['image_variation_difference_attribute']; ?>" />
 
-                        <select id="image_variation_difference_mode" name="definition[image_variation_difference_mode]" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select">
+                        <select id="image_variation_difference_mode" name="definition[image_variation_difference_mode]" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select,multiselect">
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::IMAGE_VARIATION_DIFFERENCE_MODE_NONE; ?>" <?php if ($formData['definition']['image_variation_difference_mode'] == Ess_M2ePro_Model_Amazon_Template_Description_Definition::IMAGE_VARIATION_DIFFERENCE_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Amazon_Template_Description_Definition::IMAGE_VARIATION_DIFFERENCE_MODE_PRODUCT; ?>" <?php if ($formData['definition']['image_variation_difference_mode'] == Ess_M2ePro_Model_Amazon_Template_Description_Definition::IMAGE_VARIATION_DIFFERENCE_MODE_PRODUCT): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Base Image'); ?></option>
 

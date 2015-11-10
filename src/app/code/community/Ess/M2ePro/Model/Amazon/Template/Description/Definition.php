@@ -15,6 +15,14 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
     const BRAND_MODE_CUSTOM_VALUE     = 1;
     const BRAND_MODE_CUSTOM_ATTRIBUTE = 2;
 
+    const ITEM_PACKAGE_QUANTITY_MODE_NONE             = 0;
+    const ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_VALUE     = 1;
+    const ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE = 2;
+
+    const NUMBER_OF_ITEMS_MODE_NONE             = 0;
+    const NUMBER_OF_ITEMS_MODE_CUSTOM_VALUE     = 1;
+    const NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE = 2;
+
     const DESCRIPTION_MODE_NONE     = 0;
     const DESCRIPTION_MODE_PRODUCT  = 1;
     const DESCRIPTION_MODE_SHORT    = 2;
@@ -271,6 +279,138 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
 
         if ($src['mode'] == self::BRAND_MODE_CUSTOM_ATTRIBUTE) {
             $attributes[] = $src['custom_attribute'];
+        }
+
+        return $attributes;
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return int
+     */
+    public function getItemPackageQuantityMode()
+    {
+        return (int)$this->getData('item_package_quantity_mode');
+    }
+
+    public function getItemPackageQuantityCustomValue()
+    {
+        return $this->getData('item_package_quantity_custom_value');
+    }
+
+    public function getItemPackageQuantityCustomAttribute()
+    {
+        return $this->getData('item_package_quantity_custom_attribute');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isItemPackageQuantityModeNone()
+    {
+        return $this->getItemPackageQuantityMode() == self::ITEM_PACKAGE_QUANTITY_MODE_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isItemPackageQuantityModeCustomValue()
+    {
+        return $this->getItemPackageQuantityMode() == self::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_VALUE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isItemPackageQuantityModeCustomAttribute()
+    {
+        return $this->getItemPackageQuantityMode() == self::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE;
+    }
+
+    /**
+     * @return array
+     */
+    public function getItemPackageQuantitySource()
+    {
+        return array(
+            'mode'      => $this->getItemPackageQuantityMode(),
+            'value'     => $this->getItemPackageQuantityCustomValue(),
+            'attribute' => $this->getItemPackageQuantityCustomAttribute()
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getItemPackageQuantityAttributes()
+    {
+        $attributes = array();
+        $src = $this->getItemPackageQuantitySource();
+
+        if ($src['mode'] == self::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE) {
+            $attributes[] = $src['attribute'];
+        }
+
+        return $attributes;
+    }
+
+    // ---------------------------------------
+
+    /**
+     * @return int
+     */
+    public function getNumberOfItemsMode()
+    {
+        return (int)$this->getData('number_of_items_mode');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNumberOfItemsModeNone()
+    {
+        return $this->getNumberOfItemsMode() == self::NUMBER_OF_ITEMS_MODE_NONE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNumberOfItemsModeCustomValue()
+    {
+        return $this->getNumberOfItemsMode() == self::NUMBER_OF_ITEMS_MODE_CUSTOM_VALUE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNumberOfItemsModeCustomAttribute()
+    {
+        return $this->getNumberOfItemsMode() == self::NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE;
+    }
+
+    /**
+     * @return array
+     */
+    public function getNumberOfItemsSource()
+    {
+        return array(
+            'mode'      => $this->getNumberOfItemsMode(),
+            'value'     => $this->getData('number_of_items_custom_value'),
+            'attribute' => $this->getData('number_of_items_custom_attribute')
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function getNumberOfItemsAttributes()
+    {
+        $attributes = array();
+        $src = $this->getNumberOfItemsSource();
+
+        if ($src['mode'] == self::NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE) {
+            $attributes[] = $src['attribute'];
         }
 
         return $attributes;
@@ -1482,6 +1622,8 @@ class Ess_M2ePro_Model_Amazon_Template_Description_Definition extends Ess_M2ePro
 
             $this->getTitleAttributes(),
             $this->getBrandAttributes(),
+            $this->getNumberOfItemsAttributes(),
+            $this->getItemPackageQuantityAttributes(),
             $this->getDescriptionAttributes(),
 
             $this->getBulletPointsAttributes(),

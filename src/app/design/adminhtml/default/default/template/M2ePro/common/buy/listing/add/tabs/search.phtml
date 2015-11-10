@@ -37,11 +37,6 @@
         'Ess_M2ePro_Helper_Component_Buy'
     );
 
-    M2ePro.text.general_id_label_upc = '<?php echo Mage::helper('M2ePro')->__('UPC Attribute') ?>';
-    M2ePro.text.general_id_label_bsku = '<?php echo Mage::helper('M2ePro')->__('Rakuten.com SKU Attribute') ?>';
-    M2ePro.text.general_id_label_ssku = '<?php echo Mage::helper('M2ePro')->__('Seller SKU Attribute') ?>';
-    M2ePro.text.general_id_label_isbn = '<?php echo Mage::helper('M2ePro')->__('ISBN Attribute') ?>';
-
     //-----------------------------
     Event.observe(window, 'load', function() {
 
@@ -50,10 +45,6 @@
 
         $('general_id_mode').observe('change', BuyListingChannelSettingsHandlerObj.general_id_mode_change);
         $F('general_id_mode') && $('general_id_mode').simulate('change');
-
-        $('general_id_custom_attribute').observe('change', BuyListingChannelSettingsHandlerObj.general_id_custom_attribute_change);
-        $F('general_id_custom_attribute') && $('general_id_custom_attribute').simulate('change');
-
     });
     //-----------------------------
 
@@ -72,34 +63,22 @@
 
                 <tr id="general_id_mode_container">
                     <td class="label">
-                        <label for="general_id_mode"><?php echo Mage::helper('M2ePro')->__('Identifiers'); ?>:</label>
+                        <label for="general_id_mode"><?php echo Mage::helper('M2ePro')->__('Rakuten.com SKU') ?>:</label>
                     </td>
                     <td class="value">
-                        <select id="general_id_mode" name="general_id_mode">
-                            <option value="<?php echo Ess_M2ePro_Model_Buy_Listing::GENERAL_ID_MODE_NOT_SET ?>" <?php if ($this->getData('general_id_mode') == Ess_M2ePro_Model_Buy_Listing::GENERAL_ID_MODE_NOT_SET) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Not Set') ?></option>
-                            <option value="<?php echo Ess_M2ePro_Model_Buy_Listing::GENERAL_ID_MODE_GENERAL_ID ?>" <?php if ($this->getData('general_id_mode') == Ess_M2ePro_Model_Buy_Listing::GENERAL_ID_MODE_GENERAL_ID) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Rakuten.com SKU') ?></option>
-                        </select>
-                        <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Parameter the Product Search will be performed by.'); ?></span>
-                        </p>
-                    </td>
-                </tr>
+                        <input type="hidden" id="general_id_custom_attribute" name="general_id_custom_attribute" value="<?php echo $this->getData('general_id_custom_attribute');?>"/>
 
-                <tr id="general_id_custom_attribute_container" <?php if ($this->getData('general_id_mode') == Ess_M2ePro_Model_Buy_Listing::GENERAL_ID_MODE_NOT_SET): ?>style="display: none;"<?php endif; ?>>
-                    <td class="label">
-                        <label for="general_id_custom_attribute" id="general_id_attribute_label"></label>
-                    </td>
-                    <td class="value">
-                        <select id="general_id_custom_attribute" name="general_id_custom_attribute" class="M2ePro-required-when-visible M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text" show_code_input="1">
-                            <?php if ($this->getData('general_id_custom_attribute') == ''): ?>
-                                <option class="empty"></option>
-                            <?php endif ?>
-                            <?php foreach ($attributesByInputTypes['text'] as $attribute): ?>
-                                <option value="<?php echo $attribute['code']; ?>" <?php if ($this->getData('general_id_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
-                            <?php endforeach ?>
+                        <select id="general_id_mode" name="general_id_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text">
+                            <option value="<?php echo Ess_M2ePro_Model_Buy_Listing::GENERAL_ID_MODE_NOT_SET ?>" <?php if ($this->getData('general_id_mode') == Ess_M2ePro_Model_Buy_Listing::GENERAL_ID_MODE_NOT_SET) echo 'selected="selected"' ?>><?php echo Mage::helper('M2ePro')->__('Not Set') ?></option>
+
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute">
+                                <?php foreach ($attributesByInputTypes['text'] as $attribute): ?>
+                                    <option value="<?php echo Ess_M2ePro_Model_Buy_Listing::GENERAL_ID_MODE_CUSTOM_ATTRIBUTE ?>" attribute_code="<?php echo $attribute['code']; ?>" <?php if ($this->getData('general_id_custom_attribute') == $attribute['code']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->escapeHtml($attribute['label']); ?></option>
+                                <?php endforeach ?>
+                            </optgroup>
                         </select>
                         <p class="note">
-                            <span><?php echo Mage::helper('M2ePro')->__('Specify the Attribute, which contains necessary information.'); ?></span>
+                            <span><?php echo Mage::helper('M2ePro')->__('This Setting is the source of value for Rakuten.com will be used at the time of Automatic Search of Rakuten.com Products.'); ?></span>
                         </p>
                     </td>
                 </tr>

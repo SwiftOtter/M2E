@@ -257,7 +257,8 @@ class Ess_M2ePro_Model_Synchronization_Templates_Runner
 
         foreach (array_chunk($products, $this->getMaxProductsPerStep()) as $stepProducts) {
 
-            $countString = count($stepProducts).' '.Mage::helper('M2ePro')->__('Product(s).');
+            $countString = Mage::helper('M2ePro')->__('%perStep% from %total% Product(s).',
+                                                      count($stepProducts), $totalProductsCount);
 
             if (count($stepProducts) < 10) {
 

@@ -337,7 +337,7 @@ CommonBuyTemplateNewProductAttributeHandler.prototype = Object.extend(new Common
         optgroup.insert(BuyTemplateNewProductHandlerObj.attributeHandler.attrData);
         select.appendChild(optgroup);
 
-        var handlerObj = window['AttributeCreator_' + title + '_Obj'] = new AttributeCreator();
+        var handlerObj = new AttributeCreator(title);
         handlerObj.setSelectObj(select);
         handlerObj.injectAddOption();
 

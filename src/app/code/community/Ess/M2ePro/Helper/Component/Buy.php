@@ -174,6 +174,17 @@ class Ess_M2ePro_Helper_Component_Buy extends Mage_Core_Helper_Abstract
 
     //########################################
 
+    public function isGeneralId($string)
+    {
+        if (empty($string)) {
+            return false;
+        }
+
+        return preg_match('/^\d{8,9}$/', $string);
+    }
+
+    //########################################
+
     public function clearCache()
     {
         Mage::helper('M2ePro/Data_Cache_Permanent')->removeTagValues(self::NICK);

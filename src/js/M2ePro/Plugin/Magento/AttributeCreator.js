@@ -1,8 +1,13 @@
 AttributeCreator = Class.create();
 AttributeCreator.prototype = {
 
-    popupObj:  null,
+    id: null,
+
+    popupObj:   null,
     selectObj: null,
+
+    delayTimer: null,
+    selectIndexBeforeCreation: 0,
 
     // it is for close callback [in order to rest selected option for selectObj]
     attributeWasCreated: false,
@@ -10,9 +15,18 @@ AttributeCreator.prototype = {
     formId:         'general_create_new_attribute_form',
     addOptionValue: 'new-one-attribute',
 
+    onSuccessCallback: null,
+    onFailedCallback:  null,
+
     // ---------------------------------------
 
-    initialize: function() {},
+    initialize: function(id) {
+
+        id = 'AttributeCreator_' + id + '_Obj';
+
+        this.id = id;
+        window[id] = this;
+    },
 
     // ---------------------------------------
 
@@ -21,24 +35,39 @@ AttributeCreator.prototype = {
         this.selectObj = selectObj;
     },
 
+    setSelectIndexBeforeCreation:function(index)
+    {
+        this.selectIndexBeforeCreation = index;
+    },
+
     // ---------------------------------------
 
-    showPopup: function()
+    setOnSuccessCallback: function(funct)
     {
-        var self = this,
-            params = {};
+        this.onSuccessCallback = funct;
+    },
 
-        if (self.selectObj.getAttribute('allowed_attribute_types')) {
+    setOnFailedCallback: function(funct)
+    {
+        this.onFailedCallback = funct;
+    },
+
+    // ---------------------------------------
+
+    showPopup: function(params)
+    {
+        var self = this;
+        params = params || {};
+
+        if (self.selectObj && self.selectObj.getAttribute('allowed_attribute_types')) {
             params['allowed_attribute_types'] = self.selectObj.getAttribute('allowed_attribute_types');
         }
 
-        if (self.selectObj.getAttribute('apply_to_all_attribute_sets') == '0') {
+        if (self.selectObj && self.selectObj.getAttribute('apply_to_all_attribute_sets') == '0') {
             params['apply_to_all_attribute_sets'] = '0';
         }
 
-        if (self.selectObj.getAttribute('show_code_input') == '1') {
-            params['show_code_input'] = '1';
-        }
+        params['handler_id'] = self.id;
 
         new Ajax.Request(M2ePro.url.get('adminhtml_general/getCreateAttributeHtmlPopup'), {
             method: 'post',
@@ -93,19 +122,37 @@ AttributeCreator.prototype = {
             onSuccess: function(transport) {
 
                 var result = transport.responseText.evalJSON();
-
                 if (!result || !result['result']) {
-                    MagentoMessageObj.addError(result['error']);
-                    self.onCancelPopupCallback();
+
+                    typeof self.onFailedCallback == 'function'
+                        ? self.onFailedCallback.call(self, attributeParams, result)
+                        : self.defaultOnFailedCallback(attributeParams, result);
+
                     return;
                 }
 
-                MagentoMessageObj.addSuccess(M2ePro.translator.translate('Attribute has been created.'));
-
-                self.chooseNewlyCreatedAttribute(attributeParams, result);
+                typeof self.onSuccessCallback == 'function'
+                    ? self.onSuccessCallback.call(self, attributeParams, result)
+                    : self.defaultOnSuccessCallback(attributeParams, result);
             }
         });
     },
+
+    // ---------------------------------------
+
+    defaultOnSuccessCallback: function(attributeParams, result)
+    {
+        MagentoMessageObj.addSuccess(M2ePro.translator.translate('Attribute has been created.'));
+        this.chooseNewlyCreatedAttribute(attributeParams, result);
+    },
+
+    defaultOnFailedCallback: function(attributeParams, result)
+    {
+        MagentoMessageObj.addError(result['error']);
+        this.onCancelPopupCallback();
+    },
+
+    // ---------------------------------------
 
     onOkPopupCallback: function()
     {
@@ -121,7 +168,7 @@ AttributeCreator.prototype = {
 
     onCancelPopupCallback: function()
     {
-        this.selectObj.value = this.selectObj.select('option').first().value;
+        this.selectObj.selectedIndex = this.selectIndexBeforeCreation;
         return true;
     },
 
@@ -148,15 +195,21 @@ AttributeCreator.prototype = {
 
         if (this.haveOptgroup()) {
 
+            var optGroupObj = this.selectObj.down('optgroup.M2ePro-custom-attribute-optgroup'),
+                optionValue;
+
+            optionValue = optGroupObj.hasAttribute('new_option_value') ? optGroupObj.getAttribute('new_option_value')
+                                                                       : optGroupObj.down('option').value;
+
             var option = new Element('option', {
-                attribute_code: result['code'],
+                attribute_code: attributeParams['code'],
                 class: 'simple_mode_disallowed',
-                value: this.selectObj.down('optgroup.M2ePro-custom-attribute-optgroup').down('option').value
+                value: optionValue
             });
 
         } else {
 
-            var option = new Element('option', { value: result['code']});
+            var option = new Element('option', { value: attributeParams['code']});
         }
 
         this.selectObj.select('option').each(function(el){
@@ -189,8 +242,94 @@ AttributeCreator.prototype = {
 
         $(self.selectObj).observe('change', function(event) {
 
-            if (this.value == self.addOptionValue) {
-                self.showPopup();
+            this.value == self.addOptionValue
+                ? self.showPopup()
+                : self.setSelectIndexBeforeCreation(self.selectObj.selectedIndex);
+        });
+    },
+
+    validateAttributeCode: function(value, el)
+    {
+        if (!$(el).up('tr').visible()) {
+            return true;
+        }
+
+        if (!value.match(/^[a-z][a-z_0-9]{1,254}$/)) {
+            return false;
+        }
+
+        return true;
+    },
+
+    validateAttributeCodeToBeUnique: function(value, el)
+    {
+        var result = false;
+
+        new Ajax.Request(M2ePro.url.get('adminhtml_general/isAttributeCodeUnique'), {
+            method: 'post',
+            asynchronous: false,
+            parameters: {
+                code: value
+            },
+            onSuccess: function(transport) {
+
+                if (!transport.responseText.isJSON()) {
+                    return;
+                }
+
+                result = transport.responseText.evalJSON();
+            }
+        });
+
+        return result;
+    },
+
+    // ---------------------------------------
+
+    onChangeCode: function(event)
+    {
+        if (!$('code').hasClassName('changed-by-user')) {
+            $('code').addClassName('changed-by-user');
+        }
+    },
+
+    onChangeLabel: function(event)
+    {
+        var self = this;
+
+        if (event.target.value.length < 3) {
+            return;
+        }
+
+        if ($('code').hasClassName('changed-by-user')) {
+            return;
+        }
+
+        self.delayTimer && clearTimeout(self.delayTimer);
+        self.delayTimer = setTimeout(function () {
+            self.updateCode(event.target.value);
+        }, 600);
+    },
+
+    updateCode: function(label)
+    {
+        new Ajax.Request(M2ePro.url.get('adminhtml_general/generateAttributeCodeByLabel'), {
+            method: 'post',
+            asynchronous: true,
+            parameters: {
+                store_label: label
+            },
+            onSuccess: function(transport) {
+
+                if (!transport.responseText.isJSON()) {
+                    return;
+                }
+
+                if ($('code').hasClassName('changed-by-user')) {
+                    return;
+                }
+
+                $('code').value = transport.responseText.evalJSON();
             }
         });
     },

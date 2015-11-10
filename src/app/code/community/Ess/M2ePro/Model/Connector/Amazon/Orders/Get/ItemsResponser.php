@@ -54,6 +54,17 @@ abstract class Ess_M2ePro_Model_Connector_Amazon_Orders_Get_ItemsResponser
 
             $order['shipping_address'] = $this->parseShippingAddress($shipping, $marketplace);
 
+            $order['shipping_dates'] = array(
+                'ship' => array(
+                    'from' => $shipping['ship_date']['from'],
+                    'to'   => $shipping['ship_date']['to'],
+                ),
+                'delivery' => array(
+                    'from' => $shipping['delivery_date']['from'],
+                    'to'   => $shipping['delivery_date']['to'],
+                ),
+            );
+
             $order['currency'] = isset($orderData['currency']) ? trim($orderData['currency']) : '';
             $order['paid_amount'] = isset($orderData['amount_paid']) ? (float)$orderData['amount_paid'] : 0;
             $order['tax_details'] = isset($orderData['price']['taxes']) ? $orderData['price']['taxes'] : array();

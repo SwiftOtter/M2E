@@ -339,7 +339,7 @@ $isEdit = !!$this->getRequest()->getParam('id');
                         <label for="main_image_mode"><?php echo Mage::helper('M2ePro')->__('Main Image'); ?>: <span class="required">*</span>(<a id="main_image_help" title="Help">?</a>)</label>
                     </td>
                     <td class="value" style="width: auto;">
-                        <select id="main_image_mode" name="category[main_image_mode]" class="select required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select" apply_to_all_attribute_sets="0">
+                        <select id="main_image_mode" name="category[main_image_mode]" class="select required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select,multiselect" apply_to_all_attribute_sets="0">
                             <option style="display: none;"></option>
                             <option value="<?php echo Ess_M2ePro_Model_Buy_Template_NewProduct_Core::IMAGE_MAIN_MODE_PRODUCT_BASE; ?>" <?php if ($formData['category']['main_image_mode'] == Ess_M2ePro_Model_Buy_Template_NewProduct_Core::IMAGE_MAIN_MODE_PRODUCT_BASE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Base Image'); ?></option>
 
@@ -366,7 +366,7 @@ $isEdit = !!$this->getRequest()->getParam('id');
                         <label for="additional_images_mode"><?php echo Mage::helper('M2ePro')->__('Additional Images'); ?>: (<a id="additional_image_help" title="Help">?</a>)</label>
                     </td>
                     <td class="value" style="width: auto;">
-                        <select id="additional_images_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select" apply_to_all_attribute_sets="0" name="category[additional_images_mode]">
+                        <select id="additional_images_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,textarea,select,multiselect" apply_to_all_attribute_sets="0" name="category[additional_images_mode]">
                             <option value="<?php echo Ess_M2ePro_Model_Buy_Template_NewProduct_Core::ADDITIONAL_IMAGES_MODE_NONE; ?>" <?php if ($formData['category']['additional_images_mode'] == Ess_M2ePro_Model_Buy_Template_NewProduct_Core::ADDITIONAL_IMAGES_MODE_NONE): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
 
                             <optgroup label="Product Images Quantity">

@@ -104,11 +104,6 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         }
     },
 
-    general_id_custom_attribute_change: function()
-    {
-        AmazonListingChannelSettingsHandlerObj.hideEmptyOption($('general_id_custom_attribute'));
-    },
-
     // ---------------------------------------
 
     worldwide_id_mode_change: function()
@@ -119,11 +114,6 @@ CommonAmazonListingChannelSettingsHandler.prototype = Object.extend(new CommonHa
         if (this.value == self.WORLDWIDE_ID_MODE_CUSTOM_ATTRIBUTE) {
             self.updateHiddenValue(this, $('worldwide_id_custom_attribute'));
         }
-    },
-
-    worldwide_id_custom_attribute_change: function()
-    {
-        AmazonListingChannelSettingsHandlerObj.hideEmptyOption($('worldwide_id_custom_attribute'));
     },
 
     // ---------------------------------------

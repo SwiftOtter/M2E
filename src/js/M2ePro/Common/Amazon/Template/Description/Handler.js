@@ -264,40 +264,6 @@ CommonAmazonTemplateDescriptionHandler = Class.create(CommonHandler, {
         worldwideIdMode.setAttribute('data-current-value', '');
     },
 
-    onChangeItemPackageQuantityMode: function()
-    {
-        var targetCustomValue     = $('item_package_quantity_custom_value_tr'),
-            targetCustomAttribute = $('item_package_quantity_custom_attribute');
-
-        targetCustomValue.hide();
-
-        targetCustomAttribute.value = '';
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Template_Description::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_VALUE')) {
-            targetCustomValue.show();
-        }
-
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Template_Description::ITEM_PACKAGE_QUANTITY_MODE_CUSTOM_ATTRIBUTE')) {
-            AmazonTemplateDescriptionHandlerObj.updateHiddenValue(this, targetCustomAttribute);
-        }
-    },
-
-    onChangeNumberOfItemsMode: function()
-    {
-        var targetCustomValue     = $('number_of_items_custom_value_tr'),
-            targetCustomAttribute = $('number_of_items_custom_attribute');
-
-        targetCustomValue.hide();
-
-        targetCustomAttribute.value = '';
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Template_Description::NUMBER_OF_ITEMS_MODE_CUSTOM_VALUE')) {
-            targetCustomValue.show();
-        }
-
-        if (this.value == M2ePro.php.constant('Ess_M2ePro_Model_Amazon_Template_Description::NUMBER_OF_ITEMS_MODE_CUSTOM_ATTRIBUTE')) {
-            AmazonTemplateDescriptionHandlerObj.updateHiddenValue(this, targetCustomAttribute);
-        }
-    },
-
     // ---------------------------------------
 
     setCategory: function(categoryInfo, notSetProductTypeForceIfOnlyOne)

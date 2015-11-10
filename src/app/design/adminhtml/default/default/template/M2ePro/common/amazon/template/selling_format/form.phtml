@@ -260,12 +260,12 @@
                     <td class="value" style="width: auto;">
                         <input type="hidden" id="qty_custom_attribute" name="qty_custom_attribute" value="<?php echo $formData['qty_custom_attribute']; ?>"/>
 
-                        <select id="qty_mode" name="qty_mode">
+                        <select id="qty_mode" name="qty_mode" class="M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text">
                             <option id="qty_mode_product" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT == $formData['qty_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Product Quantity'); ?></option>
                             <option id="qty_mode_single" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_SINGLE == $formData['qty_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Single Item'); ?></option>
                             <option id="qty_mode_cv" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_NUMBER == $formData['qty_mode']) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Custom Value'); ?></option>
 
-                            <optgroup label="Magento Attribute">
+                            <optgroup class="M2ePro-custom-attribute-optgroup" label="Magento Attribute" new_option_value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>">
                                 <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_PRODUCT_FIXED == $formData['qty_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('QTY'); ?></option>
                                 <?php foreach($attributesByInputTypes['text'] as $attribute) : ?>
                                     <option attribute_code="<?php echo $attribute['code']; ?>" value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE; ?>" <?php if ($formData['qty_mode'] == Ess_M2ePro_Model_Template_SellingFormat::QTY_MODE_ATTRIBUTE && $attribute['code'] == $formData['qty_custom_attribute']): ?>selected="selected"<?php endif; ?>>
@@ -375,7 +375,7 @@
                     <td class="value">
                         <input type="hidden" id="price_custom_attribute" name="price_custom_attribute" value="<?php echo $formData['price_custom_attribute']; ?>"/>
 
-                        <select id="price_mode" name="price_mode" class="select-main required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price" show_code_input="1">
+                        <select id="price_mode" name="price_mode" class="select-main required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT == $formData['price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL == $formData['price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
 
@@ -422,7 +422,7 @@
                     <td class="value">
                         <input type="hidden" id="map_price_custom_attribute" name="map_price_custom_attribute" value="<?php echo $formData['map_price_custom_attribute']; ?>"/>
 
-                        <select id="map_price_mode" name="map_price_mode" class="select-main required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price" show_code_input="1">
+                        <select id="map_price_mode" name="map_price_mode" class="select-main required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_NONE; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_NONE == $formData['map_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT == $formData['map_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL; ?>" <?php if (Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL == $formData['map_price_mode']): echo ' selected="selected"'; endif; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
@@ -452,7 +452,7 @@
                     <td class="value">
                         <input type="hidden" id="sale_price_custom_attribute" name="sale_price_custom_attribute" value="<?php echo $formData['sale_price_custom_attribute']; ?>"/>
 
-                        <select id="sale_price_mode" name="sale_price_mode" class="select-main required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price" show_code_input="1">
+                        <select id="sale_price_mode" name="sale_price_mode" class="select-main required-entry M2ePro-custom-attribute-can-be-created" allowed_attribute_types="text,price">
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_NONE; ?>" <?php if ($formData['sale_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_NONE) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('None'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT; ?>" <?php if ($formData['sale_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_PRODUCT) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Product Price'); ?></option>
                             <option value="<?php echo Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL; ?>" <?php if ($formData['sale_price_mode'] == Ess_M2ePro_Model_Template_SellingFormat::PRICE_SPECIAL) echo ' selected="selected"'; ?>><?php echo Mage::helper('M2ePro')->__('Special Price'); ?></option>
