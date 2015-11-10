@@ -153,8 +153,8 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Title
     {
         /** @var $listingOtherCollection Mage_Core_Model_Mysql4_Collection_Abstract */
         $listingOtherCollection = Mage::helper('M2ePro/Component_Buy')->getCollection('Listing_Other');
-        $listingOtherCollection->addFieldToFilter('`main_table`.account_id',(int)$account->getId());
-        $listingOtherCollection->getSelect()->where('`second_table`.`title` IS NULL');
+        $listingOtherCollection->addFieldToFilter('main_table.account_id',(int)$account->getId());
+        $listingOtherCollection->getSelect()->where('second_table.title IS NULL');
         $listingOtherCollection->getSelect()->order('main_table.create_date ASC');
         $listingOtherCollection->getSelect()->limit(10);
 
@@ -214,9 +214,9 @@ final class Ess_M2ePro_Model_Buy_Synchronization_OtherListings_Title
 
                 /** @var $listingOtherCollection Mage_Core_Model_Mysql4_Collection_Abstract */
                 $listingOtherCollection = Mage::helper('M2ePro/Component_Buy')->getCollection('Listing_Other')
-                    ->addFieldToFilter('`main_table`.account_id',(int)$account->getId())
-                    ->addFieldToFilter('`second_table`.`general_id`',(int)$generalId)
-                    ->addFieldToFilter('`second_table`.`title`',array('null' => true));
+                    ->addFieldToFilter('main_table.account_id',(int)$account->getId())
+                    ->addFieldToFilter('second_table.general_id',(int)$generalId)
+                    ->addFieldToFilter('second_table.title',array('null' => true));
 
                 $listingsOthersWithEmptyTitles = $listingOtherCollection->getItems();
             }
