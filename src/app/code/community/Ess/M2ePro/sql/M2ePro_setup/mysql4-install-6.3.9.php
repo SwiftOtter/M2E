@@ -365,6 +365,7 @@ CREATE TABLE `m2epro_order` (
   `reservation_state` TINYINT(2) UNSIGNED DEFAULT 0,
   `reservation_start_date` DATETIME DEFAULT NULL,
   `component_mode` VARCHAR(10) DEFAULT NULL,
+  `additional_data` TEXT NULL DEFAULT NULL,
   `update_date` DATETIME DEFAULT NULL,
   `create_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2181,6 +2182,7 @@ CREATE TABLE `m2epro_amazon_account` (
   `other_listings_move_settings` VARCHAR(255) DEFAULT NULL,
   `orders_last_synchronization` DATETIME DEFAULT NULL,
   `magento_orders_settings` TEXT NOT NULL,
+  `repricing` TEXT DEFAULT NULL,
   `info` TEXT DEFAULT NULL,
   PRIMARY KEY (`account_id`)
 )
@@ -2385,10 +2387,12 @@ CREATE TABLE `m2epro_amazon_listing_other` (
   `online_qty` INT(11) UNSIGNED DEFAULT NULL,
   `is_afn_channel` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `is_isbn_general_id` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `is_repricing` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`listing_other_id`),
   INDEX `general_id` (`general_id`),
   INDEX `is_afn_channel` (`is_afn_channel`),
   INDEX `is_isbn_general_id` (`is_isbn_general_id`),
+  INDEX `is_repricing` (`is_repricing`),
   INDEX `online_price` (`online_price`),
   INDEX `online_qty` (`online_qty`),
   INDEX `sku` (`sku`),
@@ -2423,6 +2427,7 @@ CREATE TABLE `m2epro_amazon_listing_product` (
   `is_afn_channel` TINYINT(2) UNSIGNED DEFAULT NULL,
   `is_isbn_general_id` TINYINT(2) UNSIGNED DEFAULT NULL,
   `is_general_id_owner` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `is_repricing` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `defected_messages` TEXT DEFAULT NULL,
   PRIMARY KEY (`listing_product_id`),
   INDEX `general_id` (`general_id`),
@@ -2440,6 +2445,7 @@ CREATE TABLE `m2epro_amazon_listing_product` (
   INDEX `variation_parent_need_processor` (`variation_parent_need_processor`),
   INDEX `variation_parent_id` (`variation_parent_id`),
   INDEX `is_general_id_owner` (`is_general_id_owner`),
+  INDEX `is_repricing` (`is_repricing`),
   INDEX `template_shipping_override_id` (`template_shipping_override_id`),
   INDEX `template_description_id` (`template_description_id`)
 )
@@ -2471,8 +2477,10 @@ CREATE TABLE `m2epro_amazon_marketplace` (
   `developer_key` VARCHAR(255) DEFAULT NULL,
   `default_currency` VARCHAR(255) NOT NULL,
   `is_asin_available` tinyint(2) UNSIGNED NOT NULL DEFAULT 1,
+  `is_merchant_fulfillment_available` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`marketplace_id`),
-  INDEX `is_asin_available` (`is_asin_available`)
+  INDEX `is_asin_available` (`is_asin_available`),
+  INDEX `is_merchant_fulfillment_available` (`is_merchant_fulfillment_available`)
 )
 ENGINE = INNODB
 CHARACTER SET utf8
@@ -2483,12 +2491,14 @@ CREATE TABLE `m2epro_amazon_order` (
   `order_id` INT(11) UNSIGNED NOT NULL,
   `amazon_order_id` VARCHAR(255) NOT NULL,
   `is_afn_channel` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
+  `is_prime` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `status` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `buyer_name` VARCHAR(255) NOT NULL,
   `buyer_email` VARCHAR(255) DEFAULT NULL,
   `shipping_service` VARCHAR(255) DEFAULT NULL,
   `shipping_address` TEXT NOT NULL,
   `shipping_price` DECIMAL(12, 4) UNSIGNED NOT NULL,
+  `shipping_dates` TEXT DEFAULT NULL,
   `paid_amount` DECIMAL(12, 4) UNSIGNED NOT NULL,
   `tax_details` TEXT DEFAULT NULL,
   `discount_details` TEXT DEFAULT NULL,
@@ -2497,8 +2507,11 @@ CREATE TABLE `m2epro_amazon_order` (
   `currency` VARCHAR(10) NOT NULL,
   `purchase_update_date` DATETIME DEFAULT NULL,
   `purchase_create_date` DATETIME DEFAULT NULL,
+  `merchant_fulfillment_data` TEXT NULL DEFAULT NULL,
+  `merchant_fulfillment_label` BLOB NULL DEFAULT NULL,
   PRIMARY KEY (`order_id`),
   INDEX `amazon_order_id` (`amazon_order_id`),
+  INDEX `is_prime` (`is_prime`),
   INDEX `buyer_email` (`buyer_email`),
   INDEX `buyer_name` (`buyer_name`),
   INDEX `paid_amount` (`paid_amount`)
@@ -2586,12 +2599,6 @@ CREATE TABLE `m2epro_amazon_template_description` (
   `registered_parameter` VARCHAR(25) DEFAULT NULL,
   `worldwide_id_mode` TINYINT(2) UNSIGNED DEFAULT 0,
   `worldwide_id_custom_attribute` VARCHAR(255) DEFAULT NULL,
-  `item_package_quantity_mode` TINYINT(2) UNSIGNED DEFAULT 0,
-  `item_package_quantity_custom_value` VARCHAR(255) DEFAULT NULL,
-  `item_package_quantity_custom_attribute` VARCHAR(255) DEFAULT NULL,
-  `number_of_items_mode` TINYINT(2) UNSIGNED DEFAULT 0,
-  `number_of_items_custom_value` VARCHAR(255) DEFAULT NULL,
-  `number_of_items_custom_attribute` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`template_description_id`),
   INDEX `marketplace_id` (`marketplace_id`),
   INDEX `is_new_asin_accepted` (`is_new_asin_accepted`),
@@ -2616,6 +2623,12 @@ CREATE TABLE `m2epro_amazon_template_description_definition` (
   `manufacturer_part_number_mode` TINYINT(2) UNSIGNED NOT NULL DEFAULT 0,
   `manufacturer_part_number_custom_value` VARCHAR(255) NOT NULL,
   `manufacturer_part_number_custom_attribute` VARCHAR(255) NOT NULL,
+  `item_package_quantity_mode` TINYINT(2) UNSIGNED DEFAULT 0,
+  `item_package_quantity_custom_value` VARCHAR(255) DEFAULT NULL,
+  `item_package_quantity_custom_attribute` VARCHAR(255) DEFAULT NULL,
+  `number_of_items_mode` TINYINT(2) UNSIGNED DEFAULT 0,
+  `number_of_items_custom_value` VARCHAR(255) DEFAULT NULL,
+  `number_of_items_custom_attribute` VARCHAR(255) DEFAULT NULL,
   `item_dimensions_volume_mode` TINYINT(2) UNSIGNED DEFAULT 0,
   `item_dimensions_volume_length_custom_value` VARCHAR(255) DEFAULT NULL,
   `item_dimensions_volume_width_custom_value` VARCHAR(255) DEFAULT NULL,
@@ -2683,6 +2696,7 @@ CREATE TABLE `m2epro_amazon_template_description_specific` (
   `template_description_id` INT(11) UNSIGNED NOT NULL,
   `xpath` VARCHAR(255) NOT NULL,
   `mode` VARCHAR(25) NOT NULL,
+  `is_required` TINYINT(2) UNSIGNED DEFAULT 0,
   `recommended_value` VARCHAR(255) DEFAULT NULL,
   `custom_value` VARCHAR(255) DEFAULT NULL,
   `custom_attribute` VARCHAR(255) DEFAULT NULL,
@@ -2796,6 +2810,9 @@ INSERT INTO `m2epro_config` (`group`,`key`,`value`,`notice`,`update_date`,`creat
   ('/component/amazon/', 'mode', '1', '0 - disable, \r\n1 - enable', '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   ('/component/amazon/', 'allowed', '1', '0 - disable, \r\n1 - enable', '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   ('/amazon/order/settings/marketplace_25/', 'use_first_street_line_as_company', '1', '0 - disable, \r\n1 - enable',
+   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+   ('/amazon/repricing/', 'mode', '0', '0 - disable, \r\n1 - enable', '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+   ('/amazon/repricing/', 'base_url', 'http://repricer.m2epro.com/', 'Repricing Tool base url',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00');
 
 INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`update_date`,`create_date`) VALUES
@@ -2814,6 +2831,12 @@ INSERT INTO `m2epro_synchronization_config` (`group`,`key`,`value`,`notice`,`upd
   ('/amazon/defaults/update_defected_listings_products/', 'mode', '1', '0 - disable, \r\n1 - enable',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   ('/amazon/defaults/update_defected_listings_products/', 'last_time', NULL, 'Last check time',
+   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+  ('/amazon/defaults/update_repricing/', 'interval', '86400', 'in seconds',
+   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+  ('/amazon/defaults/update_repricing/', 'mode', '1', '0 - disable, \r\n1 - enable',
+   '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
+  ('/amazon/defaults/update_repricing/', 'last_time', NULL, 'Last check time',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
   ('/amazon/defaults/run_parent_processors/', 'interval', '300', 'in seconds',
    '2013-05-08 00:00:00', '2013-05-08 00:00:00'),
@@ -2881,15 +2904,15 @@ INSERT INTO `m2epro_marketplace` VALUES
   (32, 9, 'China', 'CN', 'amazon.cn', 0, 9, 'Asia / Pacific', 'amazon', '2013-05-08 00:00:00', '2013-05-08 00:00:00');
 
 INSERT INTO `m2epro_amazon_marketplace` VALUES
-  (24, '8636-1433-4377', 'CAD',0),
-  (25, '7078-7205-1944', 'EUR',1),
-  (26, '7078-7205-1944', 'EUR',1),
-  (27, NULL, '',1),
-  (28, '7078-7205-1944', 'GBP',1),
-  (29, '8636-1433-4377', 'USD',1),
-  (30, '7078-7205-1944', 'EUR',1),
-  (31, '7078-7205-1944', 'EUR',1),
-  (32, NULL, '',1);
+  (24, '8636-1433-4377', 'CAD',0,0),
+  (25, '7078-7205-1944', 'EUR',1,1),
+  (26, '7078-7205-1944', 'EUR',1,0),
+  (27, NULL, '',1,0),
+  (28, '7078-7205-1944', 'GBP',1,1),
+  (29, '8636-1433-4377', 'USD',1,1),
+  (30, '7078-7205-1944', 'EUR',1,0),
+  (31, '7078-7205-1944', 'EUR',1,0),
+  (32, NULL, '',1,0);
 
 SQL
 );
